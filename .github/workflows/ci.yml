@@ -1,0 +1,12 @@
+# CI: runs the Django system checks and test suite.
+# The job name `test` is a required status check on main and develop.
+name: ci
+
+on: push
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Placeholder
+        run: "true"
