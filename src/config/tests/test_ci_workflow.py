@@ -11,6 +11,16 @@ def load_workflow():
     return yaml.safe_load(WORKFLOW_PATH.read_text())
 
 
+def step_actions(steps):
+    """The action each step uses, without its version (`""` for run steps)."""
+    return [step.get("uses", "").split("@")[0] for step in steps]
+
+
+def step_commands(steps):
+    """The shell command each step runs (`""` for action steps)."""
+    return [step.get("run", "").strip() for step in steps]
+
+
 class CiWorkflowTests(SimpleTestCase):
     def test_defines_a_single_test_job_without_matrix(self):
         self.assertTrue(WORKFLOW_PATH.exists(), f"{WORKFLOW_PATH} is missing")
@@ -31,7 +41,7 @@ class CiWorkflowTests(SimpleTestCase):
 
     def test_runs_on_ubuntu_with_checkout_and_cached_python_3_14(self):
         job = load_workflow()["jobs"]["test"]
-        actions = [step.get("uses", "").split("@")[0] for step in job["steps"]]
+        actions = step_actions(job["steps"])
 
         self.assertEqual(job["runs-on"], "ubuntu-latest")
         self.assertIn("actions/checkout", actions)
@@ -44,4 +54,15 @@ class CiWorkflowTests(SimpleTestCase):
                 "cache": "pip",
                 "cache-dependency-path": "requirements.txt",
             },
+        )
+
+    def test_installs_requirements_after_setting_up_python(self):
+        steps = load_workflow()["jobs"]["test"]["steps"]
+        actions = step_actions(steps)
+        commands = step_commands(steps)
+
+        self.assertIn("pip install -r requirements.txt", commands)
+        self.assertGreater(
+            commands.index("pip install -r requirements.txt"),
+            actions.index("actions/setup-python"),
         )
