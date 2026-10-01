@@ -66,3 +66,16 @@ class CiWorkflowTests(SimpleTestCase):
             commands.index("pip install -r requirements.txt"),
             actions.index("actions/setup-python"),
         )
+
+    def test_runs_system_checks_then_the_test_suite_after_installing(self):
+        job = load_workflow()["jobs"]["test"]
+        commands = step_commands(job["steps"])
+        install = commands.index("pip install -r requirements.txt")
+
+        self.assertEqual(
+            commands[install + 1 :],
+            ["python src/manage.py check", "python src/manage.py test src -t src"],
+        )
+        self.assertNotIn("continue-on-error", job)
+        for step in job["steps"]:
+            self.assertNotIn("continue-on-error", step)
