@@ -28,3 +28,20 @@ class CiWorkflowTests(SimpleTestCase):
         self.assertIn("push", triggers)
         self.assertNotIn("branches", triggers["push"] or {})
         self.assertEqual(sorted(triggers["pull_request"]["branches"]), ["develop", "main"])
+
+    def test_runs_on_ubuntu_with_checkout_and_cached_python_3_14(self):
+        job = load_workflow()["jobs"]["test"]
+        actions = [step.get("uses", "").split("@")[0] for step in job["steps"]]
+
+        self.assertEqual(job["runs-on"], "ubuntu-latest")
+        self.assertIn("actions/checkout", actions)
+        self.assertIn("actions/setup-python", actions)
+        setup_python = job["steps"][actions.index("actions/setup-python")]
+        self.assertEqual(
+            setup_python["with"],
+            {
+                "python-version": "3.14",
+                "cache": "pip",
+                "cache-dependency-path": "requirements.txt",
+            },
+        )
