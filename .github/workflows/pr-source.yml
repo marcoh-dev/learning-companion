@@ -1,0 +1,18 @@
+# Gitflow guard: main only accepts PRs from develop.
+# The job name `source-branch` is a required status check on main.
+name: pr-source
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  source-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: PR into main must come from develop
+        run: |
+          if [ "${{ github.head_ref }}" != "develop" ]; then
+            echo "::error::PRs into main must come from develop (got '${{ github.head_ref }}')."
+            exit 1
+          fi

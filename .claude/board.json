@@ -1,0 +1,13 @@
+{
+  "repo": "marcoh-dev/learning-companion",
+  "owner": "marcoh-dev",
+  "project_number": 4,
+  "project_id": "PVT_kwHOD8sOY84BlVNd",
+  "status_field_id": "PVTSSF_lAHOD8sOY84BlVNdzhkCgLI",
+  "status_options": {
+    "Todo": "b24e9b58",
+    "In Progress": "7ad7bc10",
+    "In Review": "a214fd02",
+    "Done": "2b41b9b5"
+  }
+}
