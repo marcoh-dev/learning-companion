@@ -33,3 +33,14 @@ class BranchProtectionTests(SimpleTestCase):
         self.assertTrue(main["enforce_admins"])
         self.assertFalse(main["allow_force_pushes"])
         self.assertFalse(main["allow_deletions"])
+
+    def test_develop_requires_test_check_but_lets_admins_push_the_main_sync(self):
+        develop = load_protection()["develop"]
+
+        self.assertEqual(
+            develop["required_status_checks"], {"strict": False, "contexts": ["test"]}
+        )
+        self.assertFalse(develop["enforce_admins"])
+        self.assertIsNone(develop["required_pull_request_reviews"])
+        self.assertFalse(develop["allow_force_pushes"])
+        self.assertFalse(develop["allow_deletions"])

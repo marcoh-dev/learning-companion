@@ -27,7 +27,7 @@ echo "main protected"
 
 gh api -X PUT "repos/$repo/branches/develop/protection" --input - >/dev/null <<'JSON'
 {
-  "required_status_checks": null,
+  "required_status_checks": { "strict": false, "contexts": ["test"] },
   "enforce_admins": false,
   "required_pull_request_reviews": null,
   "restrictions": null,
