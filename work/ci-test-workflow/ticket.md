@@ -4,14 +4,14 @@
 As a developer on the AI factory, I want every push and every PR into `develop`/`main` to run the Django test suite and system checks on GitHub Actions, so that no change lands on a protected branch without a green, independently verified `test` check.
 
 ## Acceptance criteria
-- [ ] AC1 A workflow file exists under `.github/workflows/` that defines a job whose id/name is exactly `test` (no matrix, so the check context is literally `test`).
-- [ ] AC2 The workflow triggers on `push` to all branches and on `pull_request` targeting `develop` and `main`.
-- [ ] AC3 The `test` job runs on `ubuntu-latest`, checks out the repo and sets up Python 3.14 with `actions/setup-python` and `cache: pip` (keyed on `requirements.txt`).
-- [ ] AC4 The `test` job installs dependencies with `pip install -r requirements.txt`.
-- [ ] AC5 The `test` job runs `python src/manage.py check` and `python src/manage.py test src -t src` (the exact `src -t src` form, so discovery cannot silently find 0 tests); either failing fails the job.
-- [ ] AC6 `.claude/scripts/protect-branches.sh` requires the `test` status check on `main` (in addition to `source-branch`) and on `develop`.
-- [ ] AC7 `develop` protection keeps `enforce_admins: false`, no force-push and no deletion, so the admin's direct push of the main-sync merge commit (`.claude/rules/git.md`, Landing step 2) is still possible.
-- [ ] AC8 The feature PR for this ticket shows a green `test` check (verified during landing), after which `protect-branches.sh` is re-run so `test` is required on both branches.
+- [x] AC1 A workflow file exists under `.github/workflows/` that defines a job whose id/name is exactly `test` (no matrix, so the check context is literally `test`).
+- [x] AC2 The workflow triggers on `push` to all branches and on `pull_request` targeting `develop` and `main`.
+- [x] AC3 The `test` job runs on `ubuntu-latest`, checks out the repo and sets up Python 3.14 with `actions/setup-python` and `cache: pip` (keyed on `requirements.txt`).
+- [x] AC4 The `test` job installs dependencies with `pip install -r requirements.txt`.
+- [x] AC5 The `test` job runs `python src/manage.py check` and `python src/manage.py test src -t src` (the exact `src -t src` form, so discovery cannot silently find 0 tests); either failing fails the job.
+- [x] AC6 `.claude/scripts/protect-branches.sh` requires the `test` status check on `main` (in addition to `source-branch`) and on `develop`.
+- [x] AC7 `develop` protection keeps `enforce_admins: false`, no force-push and no deletion, so the admin's direct push of the main-sync merge commit (`.claude/rules/git.md`, Landing step 2) is still possible.
+- [ ] AC8 The feature PR for this ticket shows a green `test` check (verified during landing), after which `protect-branches.sh` is re-run so `test` is required on both branches. _(verified after review: needs the PR's CI run and user-confirmed re-run of protect-branches.sh)_
 
 ## Out of scope
 - Python version matrix (single version, 3.14, matching the local venv).
