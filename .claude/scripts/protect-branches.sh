@@ -15,7 +15,7 @@ repo="$(jq -r .repo .claude/board.json)"
 
 gh api -X PUT "repos/$repo/branches/main/protection" --input - >/dev/null <<'JSON'
 {
-  "required_status_checks": { "strict": false, "contexts": ["source-branch"] },
+  "required_status_checks": { "strict": false, "contexts": ["source-branch", "test"] },
   "enforce_admins": true,
   "required_pull_request_reviews": { "required_approving_review_count": 0 },
   "restrictions": null,
