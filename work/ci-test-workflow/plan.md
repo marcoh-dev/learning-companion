@@ -39,7 +39,7 @@
 
 ## Steps
 - [x] 1. A CI workflow exists, parses as YAML and defines exactly one job with id `test` and no `strategy.matrix`. Test: `src/config/tests/test_ci_workflow.py` (plus `src/config/tests/__init__.py`). Impl: `.github/workflows/ci.yml` (header comment, `name: ci`, minimal `test` job), plus PyYAML in `requirements.txt`. Covers: AC1.
-- [ ] 2. The workflow triggers on `push` to all branches (no `branches` filter) and on `pull_request` with `branches: [develop, main]`. Test: `src/config/tests/test_ci_workflow.py`. Impl: `.github/workflows/ci.yml`. Covers: AC2.
+- [x] 2. The workflow triggers on `push` to all branches (no `branches` filter) and on `pull_request` with `branches: [develop, main]`. Test: `src/config/tests/test_ci_workflow.py`. Impl: `.github/workflows/ci.yml`. Covers: AC2.
 - [ ] 3. The `test` job runs on `ubuntu-latest`, has an `actions/checkout` step, and has an `actions/setup-python` step with `python-version: "3.14"`, `cache: pip` and `cache-dependency-path: requirements.txt`. Test: `src/config/tests/test_ci_workflow.py`. Impl: `.github/workflows/ci.yml`. Covers: AC3.
 - [ ] 4. A step after setup-python runs `pip install -r requirements.txt`. Test: `src/config/tests/test_ci_workflow.py`. Impl: `.github/workflows/ci.yml`. Covers: AC4.
 - [ ] 5. After the install step there is one step running `python src/manage.py check` and then one running `python src/manage.py test src -t src`. Neither the job nor any step sets `continue-on-error`. Test: `src/config/tests/test_ci_workflow.py`. Impl: `.github/workflows/ci.yml`. Covers: AC5.

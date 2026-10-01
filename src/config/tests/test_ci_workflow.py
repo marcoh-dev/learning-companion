@@ -18,3 +18,13 @@ class CiWorkflowTests(SimpleTestCase):
 
         self.assertEqual(list(jobs), ["test"])
         self.assertNotIn("matrix", jobs["test"].get("strategy", {}))
+
+    def test_triggers_on_every_push_and_on_prs_into_develop_and_main(self):
+        workflow = load_workflow()
+        # PyYAML follows YAML 1.1, where the bare key `on` loads as True.
+        triggers = workflow.get("on", workflow.get(True))
+
+        self.assertIsInstance(triggers, dict)
+        self.assertIn("push", triggers)
+        self.assertNotIn("branches", triggers["push"] or {})
+        self.assertEqual(sorted(triggers["pull_request"]["branches"]), ["develop", "main"])

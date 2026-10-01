@@ -2,7 +2,10 @@
 # The job name `test` is a required status check on main and develop.
 name: ci
 
-on: push
+on:
+  push:
+  pull_request:
+    branches: [develop, main]
 
 jobs:
   test:
