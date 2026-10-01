@@ -8,7 +8,7 @@ mirrors the status marker here: `[ ]` Todo · `[~]` In Progress / In Review · `
 annotation on each line. To add a ticket: create the issue, add it to the board as Todo,
 then add a plain `- [ ] <title> (#N)` line here.
 
-- [~] ci-test-workflow: CI: run the Django test suite on every push and PR (#1)
+- [x] ci-test-workflow: CI: run the Django test suite on every push and PR (#1) — work/ci-test-workflow/review.md
 - [ ] Settings from environment (.env) (#2)
 - [ ] Base layout and home page (#3)
 - [ ] Sign up, log in, log out (#4)
