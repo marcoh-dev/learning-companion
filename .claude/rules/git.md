@@ -2,7 +2,7 @@
 
 ## Branches
 
-- `main`: protected, release branch. Only receives **promotion PRs from `develop`**, merged with a merge commit. Never commit or push to it directly (enforced by a hook and by GitHub branch protection; a required `source-branch` check rejects PRs into `main` from any other branch).
+- `main`: protected, release branch. Only receives **promotion PRs from `develop`**, merged with a merge commit. Never commit or push to it directly (enforced by a hook and by GitHub branch protection; a required `source-branch` check rejects PRs into `main` from any other branch). The `test` job in `.github/workflows/ci.yml` (system checks + test suite) is a required check on `main` and `develop`.
 - `develop`: protected integration branch. Only changes through squash-merged feature/fix PRs and the main-sync merge commit (see Landing). Never `git commit` on it (hook-enforced).
 - `feature/<ticket-id>` / `fix/<ticket-id>`: all development. Created from an up-to-date `develop` by the `refine-ticket` skill (`fix/` when the ticket's issue is labelled `bug`, otherwise `feature/`). The branch name is recorded as `branch` in the state file.
 
