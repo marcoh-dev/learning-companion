@@ -34,7 +34,7 @@
 - [x] 4. Following the sign-up redirect shows a success message on the home page (inside the messages section). impl: `messages.success` in `form_valid`. covers: AC2
 - [x] 5. An invalid sign-up re-renders the form with 200 and errors, creates no user, and leaves the visitor anonymous. Use a `subTest` table: mismatched passwords, a validator-rejected password (e.g. `"12345678"`), and an existing username differing only in case. Pinning test; mutation: make `form_invalid` redirect to `home`. covers: AC3
 - [x] 6. `GET /accounts/login/` returns 200 and renders `registration/login.html` (extending `base.html`) with `username` and `password` inputs. impl: `login` route (`LoginView`), `src/templates/registration/login.html`. covers: AC4
-- [ ] 7. A valid login authenticates the user and redirects to `/`. impl: `LOGIN_REDIRECT_URL = 'home'` (and `LOGIN_URL = 'login'`) in settings. covers: AC5
+- [x] 7. A valid login authenticates the user and redirects to `/`. impl: `LOGIN_REDIRECT_URL = 'home'` (and `LOGIN_URL = 'login'`) in settings. covers: AC5
 - [ ] 8. Login with `next=/goals/` redirects to `/goals/`, and with `next=https://evil.example/` redirects to `/`. Pinning test; mutation: set `success_url_allowed_hosts={'evil.example'}` on the login view, and the external case must go red. covers: AC6
 - [ ] 9. Invalid credentials re-render the login form with 200, show the `invalid_login` error, and leave the visitor anonymous. Pinning test; mutation: a template that omits `form.non_field_errors` must make it red. covers: AC7
 - [ ] 10. `POST /accounts/logout/` logs the user out and redirects to the login page. impl: `logout` route (`LogoutView`), `LOGOUT_REDIRECT_URL = 'login'`. covers: AC8
