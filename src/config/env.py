@@ -27,7 +27,8 @@ def read_settings(environ: Mapping[str, str], env_file: Path, argv: Sequence[str
     env = _Env()
     debug = env.bool("DEBUG", default=False)
     # Read raw: env.str() would resolve a leading `$` as a reference to another variable.
-    secret_key = env.ENVIRON.get("SECRET_KEY", "")
+    # Stripped: .env keeps trailing spaces, which are never part of an intended key.
+    secret_key = env.ENVIRON.get("SECRET_KEY", "").strip()
     if _is_placeholder(secret_key):
         running_tests = (
             len(argv) > 1 and Path(argv[0]).name == "manage.py" and argv[1] == "test"
@@ -53,6 +54,6 @@ def read_settings(environ: Mapping[str, str], env_file: Path, argv: Sequence[str
 def _is_placeholder(secret_key: str) -> bool:
     return (
         not secret_key
-        or secret_key == PLACEHOLDER_SECRET_KEY
-        or secret_key.startswith(INSECURE_KEY_PREFIX)
+        or secret_key.lower() == PLACEHOLDER_SECRET_KEY
+        or secret_key.lower().startswith(INSECURE_KEY_PREFIX)
     )

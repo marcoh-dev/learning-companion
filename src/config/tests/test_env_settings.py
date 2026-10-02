@@ -142,6 +142,17 @@ class ReadSettingsTests(SimpleTestCase):
         result = read({"DEBUG": "False"}, argv=["/srv/app/src/manage.py", "test"])
         self.assertEqual(result["SECRET_KEY"], DEV_SECRET_KEY)
 
+    def test_blank_or_padded_placeholder_secret_key_with_debug_off_is_improperly_configured(self):
+        for placeholder in ["   ", "change-me ", "Change-Me", " django-insecure-x"]:
+            with self.subTest(SECRET_KEY=placeholder):
+                with self.assertRaisesMessage(ImproperlyConfigured, "SECRET_KEY"):
+                    read({"SECRET_KEY": placeholder, "DEBUG": "False"})
+
+    def test_real_secret_key_is_returned_without_surrounding_whitespace(self):
+        result = read({"SECRET_KEY": "  real-key \t", "DEBUG": "False"})
+
+        self.assertEqual(result["SECRET_KEY"], "real-key")
+
 
 class SettingsWiringTests(SimpleTestCase):
     def test_settings_take_their_values_from_read_settings(self):
