@@ -30,8 +30,7 @@ class AnonymousProfileTests(TestCase):
             "/accounts/login/?next=/accounts/profile/", {"username": "ada", "password": PASSWORD}
         )
 
-        # The logged-in page itself is covered by ProfilePageTests.
-        self.assertRedirects(response, PROFILE_URL, fetch_redirect_response=False)
+        self.assertRedirects(response, PROFILE_URL)
 
 
 class ProfilePageTests(TestCase):
