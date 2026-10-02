@@ -17,8 +17,10 @@
         <li><a href="/goals/">Goals</a></li>
         <li><a href="/sessions/">Sessions</a></li>
         <li><a href="/dashboard/">Dashboard</a></li>
-        <li><a href="/accounts/login/">Log in</a></li>
-        <li><a href="/accounts/signup/">Sign up</a></li>
+      </ul>
+      <ul>
+        <li><a href="{% url 'login' %}">Log in</a></li>
+        <li><a href="{% url 'signup' %}">Sign up</a></li>
       </ul>
     </nav>
   </header>
