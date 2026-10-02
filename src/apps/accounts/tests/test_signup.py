@@ -48,16 +48,24 @@ class InvalidSignUpTests(TestCase):
     def test_invalid_signup_rerenders_form_with_errors_and_creates_no_user(self):
         get_user_model().objects.create_user(username="taken", password=PASSWORD)
         cases = {
-            "mismatched passwords": signup_data(password2=PASSWORD + "x"),
-            "password rejected by validators": signup_data(password1="12345678", password2="12345678"),
-            "existing username in another case": signup_data(username="TAKEN"),
+            "mismatched passwords": (
+                signup_data(password2=PASSWORD + "x"),
+                "The two password fields didn’t match.",
+            ),
+            "password rejected by validators": (
+                signup_data(password1="12345678", password2="12345678"),
+                "This password is entirely numeric.",
+            ),
+            "existing username in another case": (
+                signup_data(username="TAKEN"),
+                "A user with that username already exists.",
+            ),
         }
 
-        for case, data in cases.items():
+        for case, (data, error) in cases.items():
             with self.subTest(case=case):
                 response = self.client.post(SIGNUP_URL, data)
 
-                self.assertEqual(response.status_code, 200)
-                self.assertTrue(response.context["form"].errors)
+                self.assertContains(response, error, status_code=200)
                 self.assertEqual(get_user_model().objects.count(), 1)
                 self.assertFalse(response.context["user"].is_authenticated)
