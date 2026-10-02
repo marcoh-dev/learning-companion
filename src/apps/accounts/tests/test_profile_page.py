@@ -45,10 +45,19 @@ class ProfilePageTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "accounts/profile.html")
         self.assertTemplateUsed(response, "base.html")
-        content = response.content.decode().split("</nav>", 1)[1]
-        for text in ("ada", "Ada Lovelace", "2026 Autumn"):
-            with self.subTest(text=text):
-                self.assertIn(text, content)
+        html = response.content.decode()
+        # Asserted on the <dd> display elements: the edit form also contains these values.
+        for value in ("ada", "Ada Lovelace", "2026 Autumn"):
+            with self.subTest(value=value):
+                self.assertInHTML(f"<dd>{value}</dd>", html)
+
+    def test_empty_profile_shows_not_set_for_name_and_cohort(self):
+        self.user.profile.name, self.user.profile.cohort = "", ""
+        self.user.profile.save()
+
+        response = self.client.get(PROFILE_URL)
+
+        self.assertInHTML("<dd>not set</dd>", response.content.decode(), count=2)
 
     def test_profile_page_has_edit_form_prefilled_with_current_values(self):
         response = self.client.get(PROFILE_URL)
