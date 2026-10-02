@@ -32,6 +32,12 @@ def render_nav():
     return match.group(0) if match else ""
 
 
+def messages_section(html):
+    """Return the <section class="messages"> element of a rendered page ("" if there is none)."""
+    match = re.search(r'<section class="messages">.*?</section>', html, re.DOTALL)
+    return match.group(0) if match else ""
+
+
 class HomePageTests(SimpleTestCase):
     def test_home_page_returns_200_for_anonymous_visitor(self):
         response = self.client.get("/")
@@ -68,7 +74,7 @@ class HomePageTests(SimpleTestCase):
 
         response = TemplateView.as_view(template_name="home.html")(request).render()
 
-        self.assertRegex(response.content.decode(), r'(?s)class="messages".*Goal saved\.')
+        self.assertIn("Goal saved.", messages_section(response.content.decode()))
 
 
 class BaseLayoutTests(SimpleTestCase):
@@ -103,7 +109,7 @@ class BaseLayoutTests(SimpleTestCase):
     def test_messages_are_rendered_in_messages_container(self):
         html = render_child("", {"messages": [Message(constants.SUCCESS, "Goal saved.")]})
 
-        self.assertRegex(html, r'(?s)class="messages".*Goal saved\.')
+        self.assertIn("Goal saved.", messages_section(html))
 
     def test_no_messages_container_without_messages(self):
         html = render_child("", {"messages": []})
