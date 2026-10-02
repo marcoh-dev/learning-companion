@@ -6,7 +6,7 @@ As a learner, I want to create an account, log in and log out with Django's buil
 ## Acceptance criteria
 - [x] AC1 `GET /accounts/signup/` returns 200 and renders a sign-up form (Django's `UserCreationForm`: username, password, password confirmation) in a template that extends `base.html`.
 - [x] AC2 A valid sign-up `POST` creates the user, logs them in, redirects to the home page (`/`) and shows a success message there.
-- [x] AC3 An invalid sign-up `POST` (e.g. mismatched passwords, a password rejected by the configured validators, or an existing username) re-renders the form with 200 and its errors, creates no user, and leaves the visitor logged out.
+- [ ] AC3 An invalid sign-up `POST` (e.g. mismatched passwords, a password rejected by the configured validators, or an existing username) re-renders the form with 200 and its errors, creates no user, and leaves the visitor logged out.
 - [x] AC4 `GET /accounts/login/` returns 200 and renders Django's login form in a template that extends `base.html`.
 - [x] AC5 Logging in with valid credentials authenticates the user and redirects to the home page (`/`).
 - [x] AC6 Login honours a safe `?next=` target (e.g. `next=/goals/` redirects there after login) and ignores an external one (`next=https://evil.example/` redirects to `/`).
