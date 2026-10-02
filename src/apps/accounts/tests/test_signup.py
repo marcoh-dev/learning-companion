@@ -1,6 +1,8 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 
+from config.tests.test_base_layout import messages_section
+
 
 SIGNUP_URL = "/accounts/signup/"
 PASSWORD = "correct-horse-battery-9"
@@ -35,3 +37,8 @@ class ValidSignUpTests(TestCase):
         user = get_user_model().objects.get(username="ada")
         self.assertEqual(self.client.session.get("_auth_user_id"), str(user.pk))
         self.assertTrue(self.client.get("/").context["user"].is_authenticated)
+
+    def test_valid_signup_shows_success_message_on_home_page(self):
+        response = self.client.post(SIGNUP_URL, signup_data(), follow=True)
+
+        self.assertIn("Welcome, ada! Your account has been created.", messages_section(response.content.decode()))
