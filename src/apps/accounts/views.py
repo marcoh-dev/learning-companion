@@ -1,8 +1,11 @@
 from django.contrib import messages
 from django.contrib.auth import login
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse_lazy
-from django.views.generic import CreateView
+from django.views.generic import CreateView, UpdateView
+
+from .forms import ProfileForm
 
 
 class SignUpView(CreateView):
@@ -17,3 +20,8 @@ class SignUpView(CreateView):
             self.request, f'Welcome, {self.object.get_username()}! Your account has been created.'
         )
         return response
+
+
+class ProfileView(LoginRequiredMixin, UpdateView):
+    form_class = ProfileForm
+    template_name = 'accounts/profile.html'
