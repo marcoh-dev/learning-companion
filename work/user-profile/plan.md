@@ -66,3 +66,9 @@
 | AC9 | 13 |
 | AC10 | 14 |
 | AC11 | 15, 16 (the "login without next → `/`" part is already pinned by `test_login.LoginTests.test_valid_login_authenticates_and_redirects_home` from #4) |
+
+## Review findings (round 1, see review.md)
+- [ ] 17. The display block shows the name and the cohort label in `<dd>` elements (`assertInHTML('<dd>Ada Lovelace</dd>')`, `'<dd>2026 Autumn</dd>'`), and an empty profile shows `<dd>not set</dd>` for both. Replaces the loose "anywhere after `</nav>`" check for name and cohort. Pinning; mutation: deleting the name and cohort `<dd>` lines from `profile.html` must go red, and so must dropping the `default:"not set"` filters. test: `test_profile_page.py`. covers: AC4
+- [ ] 18. The no-request render contains exactly `<a href="/accounts/login/">Log in</a>` in its nav (in addition to no `?next=`). Test-only fix. Mutation: removing the Log in `<li>` must go red. test: `test_nav.py`. covers: AC11
+- [ ] 19. `test_login_from_the_redirect_lands_on_the_profile_page` fetches the redirect target (drop `fetch_redirect_response=False`), so the landing page is asserted 200. Test-only fix. Mutation: a `ProfileView.get` that returns 500 must go red. test: `test_profile_page.py`. covers: AC3
+- [ ] 20. Refactor only: remove the extra blank line inside `AnonymousNavTests` (`test_nav.py`) and sort the `django.contrib.auth` imports in `views.py`. The suite stays green, and there are no behaviour changes.
