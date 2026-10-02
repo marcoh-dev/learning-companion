@@ -35,7 +35,7 @@
 - **Pinning tests:** where a step's test passes straight away, because of Django's built-ins or code an earlier step needed, the step names a temporary mutation that must turn it red. Run it, revert it, and note it in the commit message, as in #3 and #4.
 
 ## Steps
-- [ ] 1. `create_user` creates exactly one profile for the new user, reachable as `user.profile`, with `name == ""` and `cohort == ""`. test: `test_profile_model.py`. impl: `Profile` + `Cohort` in `models.py`, migration `0001_initial`, `signals.py` receiver, `AccountsConfig.ready()`. covers: AC1, AC2
+- [x] 1. `create_user` creates exactly one profile for the new user, reachable as `user.profile`, with `name == ""` and `cohort == ""`. test: `test_profile_model.py`. impl: `Profile` + `Cohort` in `models.py`, migration `0001_initial`, `signals.py` receiver, `AccountsConfig.ready()`. covers: AC1, AC2
 - [ ] 2. `create_superuser` also creates exactly one profile, and saving an existing user again leaves the profile count at 1. Pinning; mutation: a receiver that ignores `created` (creates on every save) must turn it red. covers: AC2
 - [ ] 3. A sign-up POST creates exactly one profile for the new user. Pinning; mutation: remove the signal connection in `ready()` and it must go red. test: `test_profile_model.py`. covers: AC2
 - [ ] 4. Field rules: `name` allows blank and has `max_length` 100. `cohort` allows blank and its choices are exactly 2026 Spring / 2026 Autumn / 2027 Spring with the values above. Deleting the user deletes the profile. Pinning; mutation: `on_delete=PROTECT` must go red, and so must dropping one cohort choice. covers: AC1
