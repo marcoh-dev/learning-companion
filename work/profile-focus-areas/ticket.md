@@ -7,7 +7,7 @@ As a learner, I want to tag my profile with the focus areas I'm working on, pick
 - [x] AC1 A `Tag` model holds a unique `name` (max 30 chars). `Profile.focus_areas` is a many-to-many relation to `Tag` that may be empty. Deleting a profile does not delete any tag.
 - [x] AC2 A data migration seeds the starter tags `python`, `django`, `testing`, `sql`, `javascript` and `devops`. They exist in a freshly migrated database.
 - [x] AC3 The profile page's display block lists the user's focus areas in alphabetical order, or shows "not set" when there are none.
-- [ ] AC4 The edit form offers one checkbox per tag that is either a starter tag or already one of this user's focus areas, with the user's current focus areas ticked. A tag that only another user has added is not offered and appears nowhere on the page.
+- [x] AC4 The edit form offers one checkbox per tag that is either a starter tag or already one of this user's focus areas, with the user's current focus areas ticked. A tag that only another user has added is not offered and appears nowhere on the page.
 - [x] AC5 Saving with a set of checkboxes ticked makes exactly those tags the user's focus areas: newly ticked ones are added, unticked ones are removed.
 - [x] AC6 The form has a single "new tag" text field. On save, a non-blank value is trimmed and lower-cased, then added to the user's focus areas together with the ticked tags. An existing tag with that name is reused instead of creating a duplicate. A blank value is ignored.
 - [x] AC7 An invalid new-tag value re-renders the page with 200 and a field error, and saves nothing. Invalid means longer than 30 chars after trimming, or containing a comma (only one tag per save).

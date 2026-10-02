@@ -70,4 +70,4 @@
 - [x] 14. When another user also has the starter tag "python", A's form still renders exactly one `focus_areas` checkbox per tag. Count the inputs as a list, not a dict. Pinning; mutation: dropping `.distinct()` from the queryset must go red. test: `test_focus_areas.py`. covers: AC4
 - [x] 15. A new tag whose lower-cased form is longer than 30 chars (e.g. `"İ" * 30`) is rejected with "Ensure this value has at most 30 characters (it has 60)." and saves nothing. Red: it is currently accepted. impl: in `clean_new_tag`, re-check the length after lower-casing with the same message. test: `test_focus_areas.py`. covers: AC7, AC1
 - [x] 16. 10 ticked tags plus `new_tag` equal to one of them (e.g. "Python") saves, because there are still 10 distinct tags. Pinning; mutation: counting `len(ticked) + bool(new_tag)` in `clean()` must go red. test: `test_focus_areas.py`. covers: AC8
-- [ ] 17. Refactor only: delete the unused `src/apps/tags/views.py` and the placeholder `src/apps/tags/admin.py`. The suite and `check` stay green.
+- [x] 17. Refactor only: delete the unused `src/apps/tags/views.py` and the placeholder `src/apps/tags/admin.py`. The suite and `check` stay green.
