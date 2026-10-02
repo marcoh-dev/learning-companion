@@ -5,6 +5,8 @@ from apps.tags.models import Tag
 
 from .models import Profile
 
+MAX_FOCUS_AREAS = 10
+
 
 class ProfileForm(forms.ModelForm):
     new_tag = forms.CharField(max_length=30, required=False, label='New focus area')
@@ -26,6 +28,15 @@ class ProfileForm(forms.ModelForm):
         if ',' in new_tag:
             raise forms.ValidationError('Enter one tag at a time.')
         return new_tag
+
+    def clean(self):
+        cleaned_data = super().clean()
+        chosen = {tag.name for tag in cleaned_data.get('focus_areas', [])}
+        if cleaned_data.get('new_tag'):
+            chosen.add(cleaned_data['new_tag'])
+        if len(chosen) > MAX_FOCUS_AREAS:
+            raise forms.ValidationError(f'Choose at most {MAX_FOCUS_AREAS} focus areas.')
+        return cleaned_data
 
     def _save_m2m(self):
         super()._save_m2m()

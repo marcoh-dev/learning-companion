@@ -125,3 +125,29 @@ class SaveFocusAreaTests(TestCase):
                 self.assertEqual(self.user.profile.name, "Ada")
                 self.assertEqual(names(self.user.profile), ["python", "rust"])
                 self.assertEqual(Tag.objects.count(), tag_count)
+
+
+class FocusAreaLimitTests(TestCase):
+    def setUp(self):
+        self.user = create_user(name="Ada")
+        self.own = ["elm", "go", "rust", "zig"]
+        self.user.profile.focus_areas.add(*[tag(n) for n in self.own])
+        self.client.force_login(self.user)
+        self.ten = STARTER_TAGS + self.own
+
+    def post(self, new_tag=""):
+        data = {"name": "Ada", "cohort": "", "new_tag": new_tag, "focus_areas": [tag(n).pk for n in self.ten]}
+        return self.client.post(PROFILE_URL, data)
+
+    def test_more_than_10_focus_areas_are_rejected(self):
+        response = self.post(new_tag="nim")
+
+        self.assertContains(response, "Choose at most 10 focus areas.", status_code=200)
+        self.assertEqual(names(self.user.profile), self.own)
+        self.assertFalse(Tag.objects.filter(name="nim").exists())
+
+    def test_exactly_10_focus_areas_are_saved(self):
+        response = self.post()
+
+        self.assertRedirects(response, PROFILE_URL)
+        self.assertEqual(names(self.user.profile), sorted(self.ten))
