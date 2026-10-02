@@ -190,3 +190,31 @@ class FilterCountTests(TestCase):
 
         labels = [option["label"] for option in filter_form(response)["options"]]
         self.assertEqual(labels, ["All (2)", "Planned (2)", "In progress (0)", "Done (0)"])
+
+
+class EmptyFilterTests(TestCase):
+    def setUp(self):
+        self.ada = create_user("ada")
+        self.client.force_login(self.ada)
+
+    def test_filter_without_matches_names_the_status(self):
+        create_goal(self.ada, "Learn SQL", Goal.Status.PLANNED, 1)
+        cases = {"done": "No done goals.", "in_progress": "No in progress goals."}
+
+        for status, message in cases.items():
+            with self.subTest(status=status):
+                response = self.client.get(GOALS_URL, {"status": status})
+
+                self.assertContains(response, message)
+                self.assertNotContains(response, "No goals yet")
+                self.assertEqual(goal_rows(response), [])
+                self.assertIsNotNone(filter_form(response))
+
+    def test_user_without_goals_sees_no_goals_yet_with_or_without_filter(self):
+        for params in ({}, {"status": "done"}):
+            with self.subTest(params=params):
+                response = self.client.get(GOALS_URL, params)
+
+                self.assertContains(response, "No goals yet")
+                self.assertNotContains(response, "No done goals")
+                self.assertContains(response, '<a href="/goals/new/">New goal</a>', html=True)

@@ -45,6 +45,8 @@ class GoalListView(OwnGoalMixin, ListView):
             }
             for value, label in [("", "All"), *Goal.Status.choices]
         ]
+        context["has_goals"] = counts[""] > 0
+        context["active_status_label"] = Goal.Status(active).label if active else ""
         return context
 
 

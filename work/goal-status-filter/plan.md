@@ -47,7 +47,7 @@
   - test: `test_goal_filter.py`
   - impl: `views.py` (aggregate counts), `goal_list.html`
   - covers: AC6
-- [ ] 5. **Empty-filter message.**
+- [x] 5. **Empty-filter message.**
   - Ada has only planned goals. `?status=done` shows "No done goals." and `?status=in_progress` shows "No in progress goals."; neither shows "No goals yet", and both still render the filter form.
   - A user with no goals sees "No goals yet" with no filter and with `?status=done`, plus the "New goal" link. The existing `EmptyGoalListTests` and `NewGoalLinkTests` must stay green.
   - test: `test_goal_filter.py`
