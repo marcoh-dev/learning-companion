@@ -1,4 +1,10 @@
+from django.template import engines
 from django.test import SimpleTestCase
+
+
+def render_child(source):
+    """Render a template string that extends base.html."""
+    return engines["django"].from_string('{% extends "base.html" %}' + source).render()
 
 
 class HomePageTests(SimpleTestCase):
@@ -12,3 +18,14 @@ class HomePageTests(SimpleTestCase):
 
         self.assertTemplateUsed(response, "home.html")
         self.assertTemplateUsed(response, "base.html")
+
+
+class BaseLayoutTests(SimpleTestCase):
+    def test_child_template_fills_title_and_content_blocks(self):
+        html = render_child(
+            "{% block title %}Child title{% endblock %}"
+            "{% block content %}<p>Child content</p>{% endblock %}"
+        )
+
+        self.assertInHTML("<title>Child title</title>", html)
+        self.assertInHTML("<p>Child content</p>", html)
