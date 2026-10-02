@@ -46,3 +46,13 @@ class LoginTests(TestCase):
 
                 # /goals/ doesn't exist yet, so don't fetch the redirect target.
                 self.assertRedirects(response, expected, fetch_redirect_response=False)
+
+    def test_invalid_credentials_rerender_form_with_error_and_stay_anonymous(self):
+        create_user()
+
+        response = self.client.post(LOGIN_URL, {"username": "ada", "password": "wrong-password"})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Please enter a correct username and password.")
+        self.assertNotIn("_auth_user_id", self.client.session)
+        self.assertFalse(response.context["user"].is_authenticated)
