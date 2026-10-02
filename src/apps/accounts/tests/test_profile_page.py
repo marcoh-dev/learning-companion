@@ -1,7 +1,17 @@
+from django.contrib.auth import get_user_model
 from django.test import TestCase
 
 
 PROFILE_URL = "/accounts/profile/"
+PASSWORD = "correct-horse-battery-9"
+
+
+def create_user(username="ada", **profile_fields):
+    user = get_user_model().objects.create_user(username=username, password=PASSWORD)
+    for field, value in profile_fields.items():
+        setattr(user.profile, field, value)
+    user.profile.save()
+    return user
 
 
 class AnonymousProfileTests(TestCase):
@@ -9,3 +19,13 @@ class AnonymousProfileTests(TestCase):
         response = self.client.get(PROFILE_URL)
 
         self.assertRedirects(response, "/accounts/login/?next=/accounts/profile/")
+
+    def test_login_from_the_redirect_lands_on_the_profile_page(self):
+        create_user()
+
+        response = self.client.post(
+            "/accounts/login/?next=/accounts/profile/", {"username": "ada", "password": PASSWORD}
+        )
+
+        # The logged-in page itself is covered by ProfilePageTests.
+        self.assertRedirects(response, PROFILE_URL, fetch_redirect_response=False)
