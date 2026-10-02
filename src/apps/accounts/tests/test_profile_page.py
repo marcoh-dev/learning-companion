@@ -93,3 +93,23 @@ class SaveProfileTests(TestCase):
         self.assertRedirects(response, PROFILE_URL)
         profile = Profile.objects.get(user=self.user)
         self.assertEqual((profile.name, profile.cohort), ("", ""))
+
+    def test_invalid_post_rerenders_with_error_and_saves_nothing(self):
+        cases = {
+            "name too long": (
+                {"name": "x" * 101, "cohort": "2026-autumn"},
+                "Ensure this value has at most 100 characters (it has 101).",
+            ),
+            "cohort outside the choices": (
+                {"name": "Ada Lovelace", "cohort": "nope"},
+                "Select a valid choice. nope is not one of the available choices.",
+            ),
+        }
+
+        for case, (data, error) in cases.items():
+            with self.subTest(case=case):
+                response = self.client.post(PROFILE_URL, data)
+
+                self.assertContains(response, error, status_code=200)
+                profile = Profile.objects.get(user=self.user)
+                self.assertEqual((profile.name, profile.cohort), ("Ada", "2026-spring"))
