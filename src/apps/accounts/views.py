@@ -6,6 +6,7 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView
 
 from .forms import ProfileForm
+from .models import Profile
 
 
 class SignUpView(CreateView):
@@ -28,7 +29,8 @@ class ProfileView(LoginRequiredMixin, UpdateView):
     success_url = reverse_lazy('profile')
 
     def get_object(self, queryset=None):
-        return self.request.user.profile
+        # Always the requester's own profile; recreate it if it has gone missing.
+        return Profile.objects.get_or_create(user=self.request.user)[0]
 
     def form_valid(self, form):
         messages.success(self.request, 'Your profile has been saved.')

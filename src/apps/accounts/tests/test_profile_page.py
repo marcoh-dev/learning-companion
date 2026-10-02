@@ -122,3 +122,16 @@ class SaveProfileTests(TestCase):
         own, other = Profile.objects.get(user=self.user), Profile.objects.get(user=bob)
         self.assertEqual((own.name, own.cohort), ("Hijacked", "2026-autumn"))
         self.assertEqual((other.name, other.cohort), ("Bob", "2027-spring"))
+
+
+class MissingProfileTests(TestCase):
+    def test_missing_profile_is_created_when_the_page_opens(self):
+        user = create_user()
+        Profile.objects.filter(user=user).delete()
+        self.client.force_login(user)
+
+        response = self.client.get(PROFILE_URL)
+
+        self.assertEqual(response.status_code, 200)
+        profile = Profile.objects.get(user=user)
+        self.assertEqual((profile.name, profile.cohort), ("", ""))
