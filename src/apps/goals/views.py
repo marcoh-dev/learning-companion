@@ -1,9 +1,11 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Count
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DeleteView, DetailView, ListView, UpdateView
 
 from .forms import GoalForm
+from .models import Goal
 
 
 class OwnGoalMixin(LoginRequiredMixin):
@@ -16,8 +18,36 @@ class OwnGoalMixin(LoginRequiredMixin):
 class GoalListView(OwnGoalMixin, ListView):
     template_name = "goals/goal_list.html"
 
+    def active_status(self):
+        """The requested ?status= if it is a known status, otherwise "" (no filter)."""
+        status = self.request.GET.get("status", "")
+        return status if status in Goal.Status.values else ""
+
     def get_queryset(self):
-        return super().get_queryset().order_by("-updated_at")
+        goals = super().get_queryset().order_by("-updated_at")
+        if status := self.active_status():
+            goals = goals.filter(status=status)
+        return goals
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        active = self.active_status()
+        # Counts cover all own goals, independent of the active filter.
+        counts = dict(
+            super().get_queryset().values_list("status").annotate(count=Count("pk")).order_by()
+        )
+        counts[""] = sum(counts.values())
+        context["status_options"] = [
+            {
+                "value": value,
+                "label": f"{label} ({counts.get(value, 0)})",
+                "selected": value == active,
+            }
+            for value, label in [("", "All"), *Goal.Status.choices]
+        ]
+        context["has_goals"] = counts[""] > 0
+        context["active_status_label"] = Goal.Status(active).label if active else ""
+        return context
 
 
 class GoalDetailView(OwnGoalMixin, DetailView):
