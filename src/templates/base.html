@@ -21,6 +21,7 @@
       <ul>
         {% if user.is_authenticated %}
           <li>Signed in as {{ user.get_username }}</li>
+          <li><a href="{% url 'profile' %}">Profile</a></li>
           <li>
             {# LogoutView only accepts POST, so logging out is a form, not a link. #}
             <form method="post" action="{% url 'logout' %}">
@@ -29,7 +30,9 @@
             </form>
           </li>
         {% else %}
-          <li><a href="{% url 'login' %}">Log in</a></li>
+          {# Return to the current page after login, except from the auth pages themselves. #}
+          {% url 'login' as login_url %}{% url 'signup' as signup_url %}
+          <li><a href="{{ login_url }}{% if request.path and request.path != login_url and request.path != signup_url %}?next={{ request.path|urlencode }}{% endif %}">Log in</a></li>
           <li><a href="{% url 'signup' %}">Sign up</a></li>
         {% endif %}
       </ul>
