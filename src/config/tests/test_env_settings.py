@@ -135,6 +135,13 @@ class ReadSettingsTests(SimpleTestCase):
 
         self.assertEqual(result["ALLOWED_HOSTS"], [])
 
+    def test_test_exception_only_applies_to_manage_py(self):
+        with self.assertRaisesMessage(ImproperlyConfigured, "SECRET_KEY"):
+            read({"DEBUG": "False"}, argv=["gunicorn", "test"])
+
+        result = read({"DEBUG": "False"}, argv=["/srv/app/src/manage.py", "test"])
+        self.assertEqual(result["SECRET_KEY"], DEV_SECRET_KEY)
+
 
 class SettingsWiringTests(SimpleTestCase):
     def test_settings_take_their_values_from_read_settings(self):

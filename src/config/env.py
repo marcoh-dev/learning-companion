@@ -29,7 +29,9 @@ def read_settings(environ: Mapping[str, str], env_file: Path, argv: Sequence[str
     # Read raw: env.str() would resolve a leading `$` as a reference to another variable.
     secret_key = env.ENVIRON.get("SECRET_KEY", "")
     if _is_placeholder(secret_key):
-        running_tests = list(argv[1:2]) == ["test"]
+        running_tests = (
+            len(argv) > 1 and Path(argv[0]).name == "manage.py" and argv[1] == "test"
+        )
         if not (debug or running_tests):
             raise ImproperlyConfigured(
                 "Set the SECRET_KEY environment variable (or add it to .env) to a real, "
