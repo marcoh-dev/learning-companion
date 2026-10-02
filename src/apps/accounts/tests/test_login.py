@@ -44,7 +44,7 @@ class LoginTests(TestCase):
                     f"{LOGIN_URL}?next={next_url}", {"username": "ada", "password": PASSWORD}
                 )
 
-                # /goals/ doesn't exist yet, so don't fetch the redirect target.
+                # Only the redirect matters here, so don't fetch the target page.
                 self.assertRedirects(response, expected, fetch_redirect_response=False)
 
     def test_invalid_credentials_rerender_form_with_error_and_stay_anonymous(self):

@@ -7,14 +7,17 @@ from django.contrib.messages.storage import default_storage
 from django.contrib.messages.storage.base import Message
 from django.template import engines
 from django.test import RequestFactory, SimpleTestCase, override_settings
+from django.urls import reverse
 from django.views.generic import TemplateView
+
+from config.tests.moved_goals_urls import MOVED_GOAL_LIST_URL
 
 
 PICO_CSS_URL = "https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
 
 # Hard-coded until the tickets that build these pages replace them with {% url %}.
+# Goals already uses {% url 'goal-list' %}; see the nav Goals tests.
 PLACEHOLDER_NAV_LINKS = [
-    ("Goals", "/goals/"),
     ("Sessions", "/sessions/"),
     ("Dashboard", "/dashboard/"),
 ]
@@ -115,6 +118,17 @@ class BaseLayoutTests(SimpleTestCase):
         nav = render_nav()
 
         self.assertInHTML('<a href="/">Learning Companion</a>', nav)
+
+    def test_nav_goals_link_points_to_goal_list(self):
+        nav = render_nav()
+
+        self.assertInHTML(f'<a href="{reverse("goal-list")}">Goals</a>', nav)
+
+    @override_settings(ROOT_URLCONF="config.tests.moved_goals_urls")
+    def test_nav_goals_link_follows_the_goal_list_url_name(self):
+        nav = render_nav()
+
+        self.assertInHTML(f'<a href="{MOVED_GOAL_LIST_URL}">Goals</a>', nav)
 
     def test_nav_has_placeholder_links_for_upcoming_pages(self):
         nav = render_nav()
