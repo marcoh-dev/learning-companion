@@ -52,3 +52,20 @@ class ProfilePageTests(TestCase):
 
         self.assertRegex(response.content.decode(), r'<input[^>]*name="name"[^>]*value="Ada Lovelace"')
         self.assertInHTML('<option value="2026-autumn" selected>2026 Autumn</option>', response.content.decode())
+
+
+class OwnProfileOnlyTests(TestCase):
+    def setUp(self):
+        self.ada = create_user("ada", name="Ada Lovelace", cohort="2026-autumn")
+        self.bob = create_user("bob", name="Bob Distinctive", cohort="2027-spring")
+        self.client.force_login(self.ada)
+
+    def test_page_never_shows_another_users_profile(self):
+        for url in (PROFILE_URL, f"{PROFILE_URL}?user={self.bob.pk}"):
+            with self.subTest(url=url):
+                response = self.client.get(url)
+
+                self.assertContains(response, "Ada Lovelace")
+                self.assertNotContains(response, "Bob Distinctive")
+                self.assertNotContains(response, "2027 Spring</dd>")
+                self.assertNotContains(response, '<option value="2027-spring" selected>')
