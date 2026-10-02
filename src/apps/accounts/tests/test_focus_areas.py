@@ -80,6 +80,16 @@ class FocusAreaFormTests(TestCase):
         self.assertNotIn("secret-b", focus_area_checkboxes(response))
         self.assertNotContains(response, "secret-b")
 
+    def test_a_starter_tag_shared_with_another_user_gets_one_checkbox(self):
+        create_user("bob").profile.focus_areas.add(tag("python"))
+        ada = create_user("ada")
+        ada.profile.focus_areas.add(tag("python"))
+        self.client.force_login(ada)
+
+        html = self.client.get(PROFILE_URL).content.decode()
+
+        self.assertEqual(html.count(f'name="focus_areas" value="{tag("python").pk}"'), 1)
+
     def test_each_checkbox_is_labelled_with_its_tag_name(self):
         self.client.force_login(create_user())
         parser = FocusAreaCheckboxes()
