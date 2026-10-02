@@ -1,4 +1,5 @@
 import re
+from html.parser import HTMLParser
 
 from django.contrib import messages
 from django.contrib.messages import constants
@@ -24,6 +25,25 @@ PLACEHOLDER_NAV_LINKS = [
 def render_child(source, context=None):
     """Render a template string that extends base.html."""
     return engines["django"].from_string('{% extends "base.html" %}' + source).render(context)
+
+
+class StylesheetCollector(HTMLParser):
+    """Collect the href of every <link> whose rel includes "stylesheet"."""
+
+    def __init__(self):
+        super().__init__()
+        self.hrefs = []
+
+    def handle_starttag(self, tag, attrs):
+        attrs = dict(attrs)
+        if tag == "link" and "stylesheet" in (attrs.get("rel") or "").lower().split():
+            self.hrefs.append(attrs.get("href"))
+
+
+def stylesheet_hrefs(html):
+    collector = StylesheetCollector()
+    collector.feed(html)
+    return collector.hrefs
 
 
 def render_nav():
@@ -90,9 +110,8 @@ class BaseLayoutTests(SimpleTestCase):
     def test_only_stylesheet_is_pico_css_from_cdn(self):
         html = render_child("")
 
-        links = [tag for tag in re.findall(r"<link\b[^>]*>", html) if 'rel="stylesheet"' in tag]
-        self.assertEqual(len(links), 1)
-        self.assertIn(f'href="{PICO_CSS_URL}"', links[0])
+        self.assertEqual(stylesheet_hrefs(html), [PICO_CSS_URL])
+        self.assertNotIn("@import", html)
 
     def test_nav_has_brand_link_to_home(self):
         nav = render_nav()
