@@ -13,7 +13,7 @@ then add a plain `- [ ] <title> (#N)` line here.
 - [x] base-layout: Base layout and home page (#3) — work/base-layout/review.md
 - [x] user-auth: Sign up, log in, log out (#4) — work/user-auth/review.md
 - [x] user-profile: Profile model and own-profile page (#5) — work/user-profile/review.md
-- [ ] Profile focus areas (tags) (#6)
+- [~] profile-focus-areas: Profile focus areas (tags) (#6)
 - [ ] Goal model and goal list (#7)
 - [ ] Create, edit and delete goals (#8)
 - [ ] Filter goals by status (#9)
