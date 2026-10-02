@@ -24,7 +24,7 @@
 - **Owner field:** `owner = ForeignKey(AUTH_USER_MODEL, on_delete=CASCADE, related_name="goals")`. It's named `owner` per the issue.
 - **Timestamps:** `created_at` uses `auto_now_add` and `updated_at` uses `auto_now`. Tests patch `django.utils.timezone.now` with `unittest.mock` for deterministic times, so no new dependency is needed.
 - **Ordering:** the view does `order_by("-updated_at")`. There's no `Meta.ordering`, so other querysets (admin, future filters) stay explicit.
-- **List view:** `GoalListView(LoginRequiredMixin, ListView)`. `get_queryset` filters on `owner=request.user`, uses template `goals/goal_list.html`, and serves `/goals/` with name `goal-list`. Rows show `get_status_display`, and the empty state uses `{% empty %}`.
+- **List view:** `GoalListView(LoginRequiredMixin, ListView)`. `get_queryset` filters on `owner=request.user`, uses template `goals/goal_list.html`, and serves `/goals/` with name `goal-list`. Rows show `get_status_display`, and the empty state uses `{% if goal_list %}…{% else %}` (not `{% empty %}`, so no empty `<ul>` is rendered).
 - **Nav test:** proves that the Goals link uses `{% url 'goal-list' %}` and not a literal `/goals/`. It renders the nav under `override_settings(ROOT_URLCONF=...)` with a test URLconf that maps `goal-list` to a different path. A plain href assertion would already pass with the hard-coded link.
 
 ## Steps
@@ -56,9 +56,9 @@
   - test: `test_goal_list.py`
   - impl: `views.py` (`order_by`)
   - covers: AC8 (ordering)
-- [ ] 8. **Empty state.** A user with no goals sees "No goals yet" and no goal rows. The test is also red for a user whose only goals belong to someone else.
+- [x] 8. **Empty state.** A user with no goals sees "No goals yet" and no goal rows. The test is also red for a user whose only goals belong to someone else.
   - test: `test_goal_list.py`
-  - impl: template `{% empty %}`
+  - impl: template `{% if %}…{% else %}`
   - covers: AC9
 - [ ] 9. **Nav Goals link uses `{% url 'goal-list' %}`.**
   - The test renders the nav under `override_settings(ROOT_URLCONF=<test urlconf>)`, which maps `goal-list` to `/elsewhere/goals/` and keeps the other named routes, and asserts that the Goals anchor follows it.

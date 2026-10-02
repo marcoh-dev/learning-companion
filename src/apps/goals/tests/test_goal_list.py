@@ -102,3 +102,30 @@ class GoalOrderingTests(TestCase):
             goal_rows(response),
             ["Learn Django Planned", "Learn SQL Planned", "Learn Docker Planned"],
         )
+
+
+class EmptyGoalListTests(TestCase):
+    def setUp(self):
+        self.ada = create_user("ada")
+        self.client.force_login(self.ada)
+
+    def test_user_without_goals_sees_empty_state(self):
+        response = self.client.get(GOALS_URL)
+
+        self.assertContains(response, "No goals yet")
+        self.assertEqual(goal_rows(response), [])
+
+    def test_other_users_goals_do_not_count(self):
+        Goal.objects.create(owner=create_user("bob"), title="Learn Rust")
+
+        response = self.client.get(GOALS_URL)
+
+        self.assertContains(response, "No goals yet")
+        self.assertEqual(goal_rows(response), [])
+
+    def test_user_with_goals_sees_no_empty_state(self):
+        Goal.objects.create(owner=self.ada, title="Learn Django")
+
+        response = self.client.get(GOALS_URL)
+
+        self.assertNotContains(response, "No goals yet")
