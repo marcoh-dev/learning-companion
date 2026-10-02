@@ -14,3 +14,9 @@ class LogoutTests(TestCase):
 
         self.assertRedirects(response, "/accounts/login/")
         self.assertNotIn("_auth_user_id", self.client.session)
+
+    def test_get_logout_is_rejected_and_keeps_user_logged_in(self):
+        response = self.client.get(LOGOUT_URL)
+
+        self.assertEqual(response.status_code, 405)
+        self.assertIn("_auth_user_id", self.client.session)
