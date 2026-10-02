@@ -29,7 +29,7 @@
   - test: `test_goal_filter.py`
   - impl: `views.py` (`GoalListView.get_queryset`)
   - covers: AC1, AC9
-- [ ] 2. **Unknown or empty status shows the full list.**
+- [x] 2. **Unknown or empty status shows the full list.**
   - `?status=archived` and `?status=` both return 200 with all of Ada's goals, matching the response without the parameter.
   - Without a parameter, all goals are listed (AC2, already true; asserted in the same test).
   - test: `test_goal_filter.py`

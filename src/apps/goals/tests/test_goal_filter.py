@@ -3,7 +3,7 @@ from datetime import datetime, timezone as dt_timezone
 from django.test import TestCase
 
 from apps.goals.models import Goal
-from apps.goals.tests.test_goal_list import GOALS_URL, create_user
+from apps.goals.tests.test_goal_list import GOALS_URL, create_user, goal_rows
 
 
 def create_goal(owner, title, status, day):
@@ -44,3 +44,27 @@ class StatusFilterTests(TestCase):
         response = self.client.get(GOALS_URL, {"status": "done"})
 
         self.assertNotContains(response, "secret goal")
+
+
+class InvalidStatusFilterTests(TestCase):
+    def setUp(self):
+        self.ada = create_user("ada")
+        self.client.force_login(self.ada)
+        self.newer = create_goal(self.ada, "Learn Django", Goal.Status.IN_PROGRESS, 2)
+        self.older = create_goal(self.ada, "Learn SQL", Goal.Status.PLANNED, 1)
+
+    def test_no_status_lists_all_own_goals(self):
+        response = self.client.get(GOALS_URL)
+
+        self.assertQuerySetEqual(response.context["goal_list"], [self.newer, self.older])
+
+    def test_unknown_or_empty_status_lists_all_own_goals(self):
+        unfiltered = self.client.get(GOALS_URL)
+
+        for value in ("archived", "", "DONE", "planned;drop"):
+            with self.subTest(status=value):
+                response = self.client.get(GOALS_URL, {"status": value})
+
+                self.assertEqual(response.status_code, 200)
+                self.assertQuerySetEqual(response.context["goal_list"], [self.newer, self.older])
+                self.assertEqual(goal_rows(response), goal_rows(unfiltered))
