@@ -1,4 +1,5 @@
 from django import forms
+from django.core.validators import MaxLengthValidator
 from django.db.models import Q
 
 from apps.tags.models import Tag
@@ -27,6 +28,8 @@ class ProfileForm(forms.ModelForm):
         new_tag = self.cleaned_data['new_tag'].lower()
         if ',' in new_tag:
             raise forms.ValidationError('Enter one tag at a time.')
+        # Lower-casing can lengthen a string (e.g. "İ"), so check the stored form again.
+        MaxLengthValidator(Tag._meta.get_field('name').max_length)(new_tag)
         return new_tag
 
     def clean(self):

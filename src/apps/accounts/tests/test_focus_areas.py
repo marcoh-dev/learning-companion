@@ -146,6 +146,11 @@ class SaveFocusAreaTests(TestCase):
         cases = {
             "longer than 30 chars": ("x" * 31, "Ensure this value has at most 30 characters (it has 31)."),
             "more than one tag": ("rust, go", "Enter one tag at a time."),
+            # "İ" lower-cases to two code points, so 30 of them become 60.
+            "longer than 30 chars once lower-cased": (
+                "İ" * 30,
+                "Ensure this value has at most 30 characters (it has 60).",
+            ),
         }
         tag_count = Tag.objects.count()
 
