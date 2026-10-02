@@ -148,3 +148,21 @@ class NewGoalLinkTests(TestCase):
 
         self.assertContains(response, "No goals yet")
         self.assertContains(response, f'<a href="{reverse("goal-create")}">New goal</a>', html=True)
+
+
+class GoalTitleLinkTests(TestCase):
+    def setUp(self):
+        self.ada = create_user("ada")
+        self.client.force_login(self.ada)
+
+    def test_each_title_links_to_its_detail_page(self):
+        django = Goal.objects.create(owner=self.ada, title="Learn Django")
+        sql = Goal.objects.create(owner=self.ada, title="Learn SQL")
+
+        response = self.client.get(GOALS_URL)
+
+        for goal in (django, sql):
+            with self.subTest(goal=goal.title):
+                self.assertContains(
+                    response, f'<a href="/goals/{goal.pk}/">{goal.title}</a>', html=True
+                )

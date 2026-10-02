@@ -83,7 +83,7 @@
   - test: `test_goal_list.py`
   - impl: `goal_list.html`
   - covers: AC13
-- [ ] 7. **List titles link to detail.** Each row's title is an `<a href="/goals/<id>/">` with the title text. The existing `goal_rows()` text assertions keep passing, because only the tags change.
+- [x] 7. **List titles link to detail.** Each row's title is an `<a href="/goals/<id>/">` with the title text. The existing `goal_rows()` text assertions keep passing, because only the tags change.
   - test: `test_goal_list.py`
   - impl: `goal_list.html`
   - covers: AC14
