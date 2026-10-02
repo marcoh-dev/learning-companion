@@ -1,3 +1,5 @@
+import re
+
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
@@ -10,6 +12,15 @@ PASSWORD = "correct-horse-battery-9"
 
 def create_user(username="ada"):
     return get_user_model().objects.create_user(username=username, password=PASSWORD)
+
+
+def goal_rows(response):
+    """Text of each row in the goal list, tags stripped and whitespace collapsed."""
+    match = re.search(r'<ul class="goal-list">(.*?)</ul>', response.content.decode(), re.DOTALL)
+    if match is None:
+        return []
+    rows = re.findall(r"<li\b.*?</li>", match.group(1), re.DOTALL)
+    return [" ".join(re.sub(r"<[^>]+>", " ", row).split()) for row in rows]
 
 
 class AnonymousGoalListTests(TestCase):
@@ -50,3 +61,16 @@ class OwnGoalsOnlyTests(TestCase):
         self.assertQuerySetEqual(response.context["goal_list"], [own])
         self.assertContains(response, "Learn Django")
         self.assertNotContains(response, "secret goal")
+
+
+class GoalRowTests(TestCase):
+    def setUp(self):
+        self.ada = create_user("ada")
+        self.client.force_login(self.ada)
+
+    def test_each_row_shows_title_and_status_label(self):
+        Goal.objects.create(owner=self.ada, title="Learn Django", status=Goal.Status.IN_PROGRESS)
+
+        response = self.client.get(GOALS_URL)
+
+        self.assertEqual(goal_rows(response), ["Learn Django In progress"])

@@ -48,7 +48,7 @@
   - test: `test_goal_list.py`
   - impl: `views.py` (`get_queryset`), template loop
   - covers: AC7
-- [ ] 6. **Rows show the status label.** A goal with `in_progress` renders a row containing its title and "In progress".
+- [x] 6. **Rows show the status label.** A goal with `in_progress` renders a row containing its title and "In progress".
   - test: `test_goal_list.py`
   - impl: template
   - covers: AC8 (content)
