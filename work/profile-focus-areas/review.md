@@ -1,34 +1,33 @@
 # Review: profile-focus-areas
-## Verdict: FAIL
+## Verdict: PASS
 
-High-severity defect: every focus-area checkbox is labelled "Tag object (N)" instead of the tag name, because `Tag` has no `__str__`. That was confirmed by rendering the page. Users can't tell which tag they're ticking, so AC4's "offers one checkbox per tag" fails in practice. The AC4/AC5 tests only parse checkbox values, which is why they stayed green. A high finding means FAIL.
+Round 2. Round 1 (commit bd7b708) FAILED on a high-severity defect: the focus-area checkboxes were labelled "Tag object (N)" because `Tag` had no `__str__`. Plan steps 13–17 fixed it and added the related pinning tests: one checkbox per tag when shared, the length re-checked after lower-casing, a re-entered tag not counted twice, and removed boilerplate. The code reviewer rendered the page as a user sees it. Each checkbox is labelled with its tag name, a shared starter tag appears once, another user's private tag appears nowhere, and the display reads `<dd>python, rust</dd>`.
 
 ## Acceptance criteria
-- AC1 — covered by `test_tag_model.FocusAreaRelationTests`, `TagRuleTests` — PASS (see low finding: the length is checked before lower-casing)
+- AC1 — covered by `test_tag_model.FocusAreaRelationTests`, `TagRuleTests` + the form-level length tests (incl. after lower-casing) — PASS
 - AC2 — covered by `test_tag_model.StarterTagTests.test_migrations_seed_the_starter_tags` — PASS
-- AC3 — covered by `test_focus_areas.FocusAreaDisplayTests.test_display_lists_focus_areas_alphabetically` + `test_profile_page.ProfilePageTests.test_empty_profile_shows_not_set_for_name_and_cohort` (count=3) — PASS
-- AC4 — `FocusAreaFormTests` cover which tags are offered/checked and that others' tags are hidden, but the labels are wrong ("Tag object (N)") and the one-checkbox-per-tag guarantee (`.distinct()` when a starter tag is shared) is untested — FAIL
+- AC3 — covered by `test_focus_areas.FocusAreaDisplayTests` (tags created in reverse order) + `test_profile_page...test_empty_profile_shows_not_set_for_name_and_cohort` (count=3) — PASS
+- AC4 — covered by `test_focus_areas.FocusAreaFormTests` (offered set and checked state; foreign tag absent from the page; one checkbox per shared tag; visible labels equal the tag names) — PASS
 - AC5 — covered by `SaveFocusAreaTests.test_ticked_tags_become_exactly_the_focus_areas` — PASS
 - AC6 — covered by `SaveFocusAreaTests` (normalised, reuse, blank) — PASS
-- AC7 — covered by `SaveFocusAreaTests.test_invalid_new_tag_shows_error_and_saves_nothing` — PASS (see low finding)
-- AC8 — covered by `FocusAreaLimitTests` (11 rejected, 10 saved) — PASS (see low finding: a new tag equal to a ticked one is untested)
+- AC7 — covered by `SaveFocusAreaTests.test_invalid_new_tag_shows_error_and_saves_nothing` (31 chars, comma, "İ"×30) — PASS
+- AC8 — covered by `FocusAreaLimitTests` (11 rejected, exactly 10 saved, re-entered tag not double-counted) — PASS
 - AC9 — covered by `ForeignTagTests.test_posting_a_tag_that_is_not_offered_is_rejected` — PASS
 - AC10 — covered by `ForeignTagTests.test_saving_never_changes_another_users_focus_areas` — PASS
 
-Suite: 96 tests, OK. `manage.py check`: no issues. `makemigrations --check`: no changes.
+Suite: 99 tests, OK. `manage.py check`: no issues. `makemigrations --check`: no changes.
 
 ## Findings
-Code review: 0 high, 1 medium, 5 low. Security review: 0 high, 1 medium, 2 low, plus the label bug (rated high here). Items deferred to #29 were not re-raised.
+Code review: 0 high, 0 medium, 5 low. Security review: 0 high, 0 medium, 1 low. None block the merge.
 
-- [high] src/apps/tags/models.py — No `Tag.__str__`, so the checkbox labels render "Tag object (N)". — Add `__str__` returning the name, and a test that asserts each checkbox's label text (plan step 13).
-- [medium] src/apps/accounts/tests/test_focus_areas.py:50 / forms.py:22-24 — `.distinct()` is required (a starter tag shared by two profiles would otherwise get two checkboxes) but untested; the dict-based parser would hide a duplicate. — Pinning test counting the checkbox inputs (plan step 14).
-- [medium] src/apps/accounts/forms.py:46 (security) — The shared vocabulary can grow without limit. Each save can create a new `Tag` by unticking old tags and adding new ones, signup is open, and orphaned tags are never deleted. Not covered by any AC. — Deferred: needs a design decision (per-user creation cap with `created_by`, or deleting orphaned non-starter tags). Recommend a follow-up ticket before #11/#18 build on the table.
-- [low] src/apps/accounts/forms.py:12,27 — `max_length=30` is checked before `.lower()`. Characters like "İ" lower-case to two code points, so 30 of them store 60 chars (breaks AC1; a 500 on stricter DBs). — Check the length after lower-casing (plan step 15).
-- [low] src/apps/accounts/tests/test_focus_areas.py:142-153 — 10 ticked plus a new tag equal to one of them (still 10 distinct) is untested. A `len(ticked) + bool(new_tag)` regression would pass. — Add the case (plan step 16).
-- [low] src/apps/tags/views.py, admin.py — Unused startapp boilerplate (`views.py` has an unused import). — Remove (plan step 17, refactor).
-- [low] src/apps/accounts/forms.py:22 — `Q(profiles=self.instance)` raises `ValueError` for an unsaved instance (`ProfileForm()`). There is no such caller today. — Follow-up: guard when the form is reused elsewhere.
-- [low] forms/profile.html (security) — Sequential global tag ids let a user test, one guessed name at a time, whether a tag name already exists (a reused low id vs a fresh id). — Accepted for now; revisit together with the vocabulary-growth follow-up (e.g. slug `to_field_name`).
-- [low] src/apps/tags/tests/test_tag_model.py:26 — The max_length test restates the field definition. — Accepted; AC7 covers the behaviour at form level.
+- [medium, carried over, deferred] src/apps/accounts/forms.py (security) — The shared vocabulary can grow without limit (new tags on every save, orphans never deleted, open signup). — Needs a design decision (a per-user creation cap with `created_by`, or deleting orphaned non-starter tags). Recommended as a follow-up ticket before #11/#18 build on the `Tag` table.
+- [low] src/apps/accounts/forms.py:28 (security) — No Unicode normalisation (NFC/NFD, fullwidth, homoglyphs, zero-width), so visually identical names can coexist. Not visible to other users. — Fold into the vocabulary follow-up: `unicodedata.normalize('NFKC', …).casefold()`, optionally rejecting Cf/Cc characters.
+- [low] src/apps/accounts/tests/test_focus_areas.py:160 — AC7 asserts the error text anywhere on the page, not as a field error on `new_tag`. The rendering check confirmed it is attached to the field today. — Follow-up: `assertFormError(response.context["form"], "new_tag", error)`.
+- [low] src/apps/accounts/tests/test_focus_areas.py:175-185 — The AC8 rejection test posts the unchanged name, so it can't catch a partial save of the scalar fields. — Follow-up: post a changed name and assert it isn't saved.
+- [low] src/apps/accounts/forms.py:13 — The form's `max_length=30` duplicates the model's `max_length`. — Follow-up: read it from `Tag._meta` (as the re-check already does).
+- [low] src/apps/tags/migrations/0003_seed_starter_tags.py:1 — The hand-written migration carries a "Generated by Django" header. — Cosmetic; accepted.
+- [low] src/apps/tags/migrations/0001–0004 — Four migrations for a brand-new app. — Accepted as the TDD audit trail; squashing is optional before #11.
+- Carried over from round 1, accepted: the sequential tag-id existence side channel; the `ValueError` for `ProfileForm()` without a saved instance (no such caller); the max_length test restating the field.
 
 ## Reviewed
-commit bd7b708, 2026-10-02
+commit 958fd83, 2026-10-02
