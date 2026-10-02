@@ -50,7 +50,7 @@
 | AC13 | 13 |
 
 ## Review findings (round 1, see review.md)
-- [ ] 14. A `SECRET_KEY` starting with `$` (e.g. `$abc123`) is returned verbatim, with no django-environ proxy resolution — test: `test_env_settings.py` — impl: `config/env.py` — covers: AC4 (finding 1)
+- [x] 14. A `SECRET_KEY` starting with `$` (e.g. `$abc123`) is returned verbatim, with no django-environ proxy resolution — test: `test_env_settings.py` — impl: `config/env.py` — covers: AC4 (finding 1)
 - [ ] 15. With DEBUG off and not under `manage.py test`, a placeholder key (`change-me`, or anything starting with `django-insecure-`) raises `ImproperlyConfigured` naming `SECRET_KEY`. Under `test` it is replaced by the dev key — test: `test_env_settings.py` — impl: `config/env.py` — covers: AC6 (finding 2)
 - [ ] 16. The `.env` precedence test proves that `os.environ` is left unchanged (snapshot before and after, inside `mock.patch.dict(os.environ)`, using a test-only key in the temp `.env`) instead of `assertNotIn("ALLOWED_HOSTS", os.environ)`. Test-only fix, as its own step — test: `test_env_settings.py` — impl: none — covers: AC2 (finding 3)
 - [ ] 17. `ALLOWED_HOSTS` entries are stripped and empty entries dropped (`"a.com, b.com,"` → `["a.com", "b.com"]`). An explicitly empty value stays `[]` (fails closed) — test: `test_env_settings.py` — impl: `config/env.py` — covers: AC8 (finding 4)

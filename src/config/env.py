@@ -22,7 +22,8 @@ def read_settings(environ: Mapping[str, str], env_file: Path, argv: Sequence[str
         _Env.read_env(env_file)
     env = _Env()
     debug = env.bool("DEBUG", default=False)
-    secret_key = env.str("SECRET_KEY", default="")
+    # Read raw: env.str() would resolve a leading `$` as a reference to another variable.
+    secret_key = env.ENVIRON.get("SECRET_KEY", "")
     if not secret_key:
         running_tests = list(argv[1:2]) == ["test"]
         if not (debug or running_tests):

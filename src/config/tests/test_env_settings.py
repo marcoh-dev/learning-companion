@@ -103,6 +103,12 @@ class ReadSettingsTests(SimpleTestCase):
         self.assertEqual(result["SECRET_KEY"], DEV_SECRET_KEY)
         self.assertEqual(result["ALLOWED_HOSTS"], ["localhost", "127.0.0.1"])
 
+    def test_secret_key_starting_with_dollar_is_taken_verbatim(self):
+        # django-environ would otherwise resolve `$name` as a reference to another variable.
+        result = read({"SECRET_KEY": "$abc123", "abc123": "other", "DEBUG": "False"})
+
+        self.assertEqual(result["SECRET_KEY"], "$abc123")
+
 
 class SettingsWiringTests(SimpleTestCase):
     def test_settings_take_their_values_from_read_settings(self):
