@@ -1,5 +1,10 @@
+import re
+
 from django.template import engines
 from django.test import SimpleTestCase
+
+
+PICO_CSS_URL = "https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
 
 
 def render_child(source):
@@ -34,3 +39,10 @@ class BaseLayoutTests(SimpleTestCase):
 
         self.assertInHTML("<title>Child title</title>", html)
         self.assertInHTML("<p>Child content</p>", html)
+
+    def test_only_stylesheet_is_pico_css_from_cdn(self):
+        html = render_child("")
+
+        links = [tag for tag in re.findall(r"<link\b[^>]*>", html) if 'rel="stylesheet"' in tag]
+        self.assertEqual(len(links), 1)
+        self.assertIn(f'href="{PICO_CSS_URL}"', links[0])

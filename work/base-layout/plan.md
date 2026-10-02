@@ -21,7 +21,7 @@
 - [x] 2. The home response uses both `home.html` and `base.html` (`assertTemplateUsed`). impl: `src/templates/base.html` with a `content` block; `home.html` extends it. covers: AC2
 - [x] 3. A child template that extends `base.html` and overrides the `title` and `content` blocks gets them rendered inside `<title>` and the page body. impl: `base.html` (`title` block). covers: AC4
 - [x] 4. The home page `<title>` contains "Learning Companion". impl: `home.html` (`title` block). covers: AC4
-- [ ] 5. `base.html` includes exactly one stylesheet link, and its href is the Pico.css CDN URL. impl: `base.html` `<head>`. covers: AC3
+- [x] 5. `base.html` includes exactly one stylesheet link, and its href is the Pico.css CDN URL. impl: `base.html` `<head>`. covers: AC3
 - [ ] 6. The page has a `<nav>` containing the brand link `<a href="/">Learning Companion</a>`. impl: `base.html`. covers: AC5
 - [ ] 7. The nav contains links "Goals", "Sessions", "Dashboard", "Log in" and "Sign up" with the placeholder hrefs above (`subTest` table). impl: `base.html`. covers: AC6
 - [ ] 8. Rendering `base.html` with one message in the `messages` context shows that message's text inside the `messages` container. impl: `base.html` (container rendered unconditionally, with the guard left for step 9). covers: AC7
