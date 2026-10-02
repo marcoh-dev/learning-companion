@@ -18,7 +18,7 @@
 - New tests go in `src/config/tests/test_env_settings.py` (helper + wiring + `.env.example` + docs + requirements). The CI assertion goes in the existing `test_ci_workflow.py`.
 
 ## Steps
-- [ ] 1. `django-environ` is pinned in `requirements.txt` and importable — test: `src/config/tests/test_env_settings.py` — impl: `.venv/bin/pip install django-environ==0.14.0`, `requirements.txt` (via `pip freeze`) — covers: AC1
+- [x] 1. `django-environ` is pinned in `requirements.txt` and importable — test: `src/config/tests/test_env_settings.py` — impl: `.venv/bin/pip install django-environ==0.14.0`, `requirements.txt` (via `pip freeze`) — covers: AC1
 - [ ] 2. `read_settings` returns `SECRET_KEY` from `environ` when set — test: `test_env_settings.py` — impl: `src/config/env.py` (new) — covers: AC4
 - [ ] 3. `DEBUG` is parsed as a boolean (`True`/`False`/`1`/`0`/`yes`/`no`) and defaults to `False` — test: `test_env_settings.py` — impl: `config/env.py` — covers: AC7
 - [ ] 4. `ALLOWED_HOSTS` is parsed as a comma-separated list and defaults to `["localhost", "127.0.0.1"]` — test: `test_env_settings.py` — impl: `config/env.py` — covers: AC8
