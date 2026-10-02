@@ -1,6 +1,7 @@
 import importlib.util
 import os
 import tempfile
+import warnings
 from pathlib import Path
 
 from django.conf import settings
@@ -87,3 +88,12 @@ class ReadSettingsTests(SimpleTestCase):
         self.assertNotIn("ALLOWED_HOSTS", os.environ)
         self.assertIs(result["DEBUG"], True)
         self.assertEqual(result["ALLOWED_HOSTS"], ["file.example.com"])
+
+    def test_missing_env_file_loads_defaults_without_warnings_or_log_messages(self):
+        with warnings.catch_warnings():
+            warnings.simplefilter("error")
+            with self.assertNoLogs(level="INFO"):
+                result = read({"DEBUG": "True"}, env_file=MISSING_ENV_FILE)
+
+        self.assertEqual(result["SECRET_KEY"], DEV_SECRET_KEY)
+        self.assertEqual(result["ALLOWED_HOSTS"], ["localhost", "127.0.0.1"])
