@@ -56,4 +56,4 @@
 - [x] 17. `ALLOWED_HOSTS` entries are stripped and empty entries dropped (`"a.com, b.com,"` → `["a.com", "b.com"]`). An explicitly empty value stays `[]` (fails closed) — test: `test_env_settings.py` — impl: `config/env.py` — covers: AC8 (finding 4)
 - [x] 18. The old-key test scans every readable text file under `src/` (excluding `db.sqlite3`), not just `*.py`. Test-only change — test: `test_env_settings.py` — impl: none — covers: AC9 (finding 5)
 - [x] 19. The `test` exception only applies when `argv[0]` is `manage.py` (basename), so e.g. `["gunicorn", "test"]` still raises — test: `test_env_settings.py` — impl: `config/env.py` — covers: AC6 (finding 6)
-- [ ] 20. `.gitignore` ignores `.env.*` variants but keeps `.env.example` tracked — test: `test_env_settings.py` (`git check-ignore`, or `.gitignore` lines `.env.*` and `!.env.example`) — impl: `.gitignore` — covers: AC10 (finding 7)
+- [x] 20. `.gitignore` ignores `.env.*` variants but keeps `.env.example` tracked — test: `test_env_settings.py` (`git check-ignore`, or `.gitignore` lines `.env.*` and `!.env.example`) — impl: `.gitignore` — covers: AC10 (finding 7)

@@ -196,6 +196,13 @@ class EnvExampleTests(SimpleTestCase):
 
         self.assertIn(".env", ignored)
 
+    def test_env_variants_are_git_ignored_but_the_example_is_tracked(self):
+        ignored = (REPO_ROOT / ".gitignore").read_text().splitlines()
+
+        self.assertIn(".env.*", ignored)
+        self.assertIn("!.env.example", ignored)
+        self.assertGreater(ignored.index("!.env.example"), ignored.index(".env.*"))
+
 
 class SetupDocsTests(SimpleTestCase):
     def test_setup_instructions_mention_copying_env_example(self):
