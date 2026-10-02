@@ -40,7 +40,7 @@
   - test: `test_goal_model.py`
   - impl: `models.py`, `migrations/0003_*`
   - covers: AC1 (timestamps), AC3
-- [ ] 4. **Login required.** An anonymous GET `/goals/` redirects to `/accounts/login/?next=/goals/`, and `reverse("goal-list") == "/goals/"`.
+- [x] 4. **Login required.** An anonymous GET `/goals/` redirects to `/accounts/login/?next=/goals/`, and `reverse("goal-list") == "/goals/"`.
   - test: `src/apps/goals/tests/test_goal_list.py`
   - impl: `apps/goals/views.py`, `apps/goals/urls.py`, include in `config/urls.py`, `templates/goals/goal_list.html` (title "Goals · Learning Companion")
   - covers: AC6
