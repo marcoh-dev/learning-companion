@@ -43,6 +43,8 @@ Blocked calls exit with code 2; the stderr message tells Claude which phase it i
 3. Requirements: `bash`, `jq`, `git`, and `gh` for the PR step.
 4. Start a session and check the setup with any prompt — you should see the `[workflow] ... phase: idle` context line.
 
+To run this repository's Learning Companion app itself: `python3 -m venv .venv && .venv/bin/pip install -r requirements.txt`, then `cp .env.example .env` (local settings, git-ignored), then `.venv/bin/python src/manage.py runserver`. See `CLAUDE.md` for the other commands.
+
 ## A run in practice
 
 ```

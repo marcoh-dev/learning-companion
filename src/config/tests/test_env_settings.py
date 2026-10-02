@@ -149,3 +149,10 @@ class EnvExampleTests(SimpleTestCase):
         ignored = (REPO_ROOT / ".gitignore").read_text().splitlines()
 
         self.assertIn(".env", ignored)
+
+
+class SetupDocsTests(SimpleTestCase):
+    def test_setup_instructions_mention_copying_env_example(self):
+        for doc in ["CLAUDE.md", "README.md"]:
+            with self.subTest(doc=doc):
+                self.assertIn("cp .env.example .env", (REPO_ROOT / doc).read_text())

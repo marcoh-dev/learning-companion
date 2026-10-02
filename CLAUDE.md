@@ -8,6 +8,7 @@ Run everything from the repository root:
 
 ```bash
 python3 -m venv .venv && .venv/bin/pip install -r requirements.txt   # setup
+cp .env.example .env                            # local settings (git-ignored), see below
 .venv/bin/python src/manage.py runserver        # dev server on :8000
 .venv/bin/python src/manage.py test src -t src  # test suite (the hooks run exactly this)
 .venv/bin/python src/manage.py check            # system checks (lint command in hooks)
@@ -15,6 +16,8 @@ python3 -m venv .venv && .venv/bin/pip install -r requirements.txt   # setup
 ```
 
 Always pass `src -t src` to `test`. Without it, Django discovers from the repo root, finds 0 tests and exits 0, so a broken suite would look green.
+
+`SECRET_KEY`, `DEBUG` and `ALLOWED_HOSTS` come from the environment or `.env` at the repository root (`src/config/env.py`). Without a `SECRET_KEY`, settings refuse to load unless `DEBUG` is True or the command is `test`, so the suite needs no `.env`.
 
 After installing a new dependency, update `requirements.txt` with `.venv/bin/pip freeze > requirements.txt`.
 
