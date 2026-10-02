@@ -1,9 +1,12 @@
 import re
 
+from django.contrib import messages
 from django.contrib.messages import constants
+from django.contrib.messages.storage import default_storage
 from django.contrib.messages.storage.base import Message
 from django.template import engines
-from django.test import SimpleTestCase
+from django.test import RequestFactory, SimpleTestCase, override_settings
+from django.views.generic import TemplateView
 
 
 PICO_CSS_URL = "https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
@@ -55,6 +58,17 @@ class HomePageTests(SimpleTestCase):
         for topic in ("goals", "sessions", "resources", "ai summaries"):
             with self.subTest(topic=topic):
                 self.assertIn(topic, intro)
+
+    # Cookie storage keeps the messages framework off the session, so no DB is needed.
+    @override_settings(MESSAGE_STORAGE="django.contrib.messages.storage.cookie.CookieStorage")
+    def test_message_added_via_messages_framework_appears_on_home_page(self):
+        request = RequestFactory().get("/")
+        request._messages = default_storage(request)
+        messages.success(request, "Goal saved.")
+
+        response = TemplateView.as_view(template_name="home.html")(request).render()
+
+        self.assertRegex(response.content.decode(), r'(?s)class="messages".*Goal saved\.')
 
 
 class BaseLayoutTests(SimpleTestCase):
