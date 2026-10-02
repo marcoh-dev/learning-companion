@@ -32,3 +32,12 @@ class TagRuleTests(TestCase):
         user.delete()
 
         self.assertTrue(Tag.objects.filter(name="rust").exists())
+
+
+class StarterTagTests(TestCase):
+    def test_migrations_seed_the_starter_tags(self):
+        starters = Tag.objects.filter(starter=True).values_list("name", flat=True)
+
+        self.assertEqual(
+            sorted(starters), ["devops", "django", "javascript", "python", "sql", "testing"]
+        )
