@@ -42,7 +42,6 @@ class AnonymousNavTests(TestCase):
         self.assertNotIn(reverse("logout"), nav)
         self.assertNotIn("Log out", nav)
 
-
     def test_login_link_has_no_next_on_the_login_and_signup_pages(self):
         for url in (reverse("login"), reverse("signup")):
             with self.subTest(url=url):

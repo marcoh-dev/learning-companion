@@ -7,7 +7,7 @@ As a learner, I want a profile with my name and cohort that only I can see and e
 - [x] AC1 A `Profile` model is linked one-to-one to the user (`user.profile`), with `name` (optional text, max 100 chars) and `cohort` (one of a fixed set of choices, or not set). Deleting the user deletes their profile.
 - [x] AC2 Creating a user by any route (`create_user`, `create_superuser`, sign-up) creates exactly one profile for them, with an empty `name` and no cohort. Saving an existing user again does not create a second profile.
 - [x] AC3 An anonymous `GET /accounts/profile/` redirects to the login page with `next=/accounts/profile/`, and logging in from there lands on the profile page.
-- [ ] AC4 For a logged-in user, `GET /accounts/profile/` returns 200 and renders `accounts/profile.html` (extending `base.html`). It shows their username, name and cohort label, and an edit form (`name`, `cohort`) prefilled with their current values.
+- [x] AC4 For a logged-in user, `GET /accounts/profile/` returns 200 and renders `accounts/profile.html` (extending `base.html`). It shows their username, name and cohort label, and an edit form (`name`, `cohort`) prefilled with their current values.
 - [x] AC5 The profile page only ever shows the logged-in user's own profile. With two users, user A's page never contains user B's name or cohort, and adding a query parameter such as `?user=<B's id>` changes nothing.
 - [x] AC6 A valid `POST` to `/accounts/profile/` saves the logged-in user's name and cohort, redirects back to `/accounts/profile/`, and shows a success message there. A blank `name` is a valid save.
 - [x] AC7 An invalid `POST` (a `name` over 100 chars, or a `cohort` outside the choices) re-renders the page with 200 and the rendered field error, and saves nothing.
