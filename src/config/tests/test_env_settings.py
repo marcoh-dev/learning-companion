@@ -1,13 +1,17 @@
+import importlib
 import importlib.util
 import os
+import sys
 import tempfile
 import warnings
 from pathlib import Path
+from unittest import mock
 
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.test import SimpleTestCase
 
+from config import settings as config_settings
 from config.env import DEV_SECRET_KEY, read_settings
 
 REPO_ROOT = Path(settings.BASE_DIR).parent
@@ -97,3 +101,26 @@ class ReadSettingsTests(SimpleTestCase):
 
         self.assertEqual(result["SECRET_KEY"], DEV_SECRET_KEY)
         self.assertEqual(result["ALLOWED_HOSTS"], ["localhost", "127.0.0.1"])
+
+
+class SettingsWiringTests(SimpleTestCase):
+    def test_settings_take_their_values_from_read_settings(self):
+        values = {"SECRET_KEY": "patched", "DEBUG": True, "ALLOWED_HOSTS": ["patched.example"]}
+        self.addCleanup(importlib.reload, config_settings)
+
+        with mock.patch("config.env.read_settings", return_value=values) as read_mock:
+            module = importlib.reload(config_settings)
+
+        read_mock.assert_called_once_with(os.environ, REPO_ROOT / ".env", sys.argv)
+        self.assertEqual(module.SECRET_KEY, "patched")
+        self.assertIs(module.DEBUG, True)
+        self.assertEqual(module.ALLOWED_HOSTS, ["patched.example"])
+
+    def test_the_old_hardcoded_secret_key_is_gone_from_src(self):
+        # Assembled at runtime so this file doesn't contain the old key either.
+        old_key_fragment = "django-insecure-" + "4$t-4q$zq9"
+        sources = Path(settings.BASE_DIR).rglob("*.py")
+
+        offenders = [str(path) for path in sources if old_key_fragment in path.read_text()]
+
+        self.assertEqual(offenders, [])
