@@ -44,7 +44,7 @@
   - test: `src/apps/goals/tests/test_goal_list.py`
   - impl: `apps/goals/views.py`, `apps/goals/urls.py`, include in `config/urls.py`, `templates/goals/goal_list.html` (title "Goals · Learning Companion")
   - covers: AC6
-- [ ] 5. **Only your own goals.** Signed in as ada, the page shows ada's goal title and not bob's.
+- [x] 5. **Only your own goals.** Signed in as ada, the page shows ada's goal title and not bob's.
   - test: `test_goal_list.py`
   - impl: `views.py` (`get_queryset`), template loop
   - covers: AC7

@@ -2,6 +2,8 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
 
+from apps.goals.models import Goal
+
 GOALS_URL = "/goals/"
 PASSWORD = "correct-horse-battery-9"
 
@@ -31,3 +33,20 @@ class SignedInGoalListTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "goals/goal_list.html")
         self.assertContains(response, "<title>Goals · Learning Companion</title>", html=True)
+
+
+class OwnGoalsOnlyTests(TestCase):
+    def setUp(self):
+        self.ada = create_user("ada")
+        self.bob = create_user("bob")
+        self.client.force_login(self.ada)
+
+    def test_list_shows_own_goals_but_not_other_users_goals(self):
+        own = Goal.objects.create(owner=self.ada, title="Learn Django")
+        Goal.objects.create(owner=self.bob, title="Bob's secret goal")
+
+        response = self.client.get(GOALS_URL)
+
+        self.assertQuerySetEqual(response.context["goal_list"], [own])
+        self.assertContains(response, "Learn Django")
+        self.assertNotContains(response, "secret goal")

@@ -4,4 +4,9 @@
 
 {% block content %}
   <h1>Your goals</h1>
+  <ul>
+    {% for goal in goal_list %}
+      <li>{{ goal.title }}</li>
+    {% endfor %}
+  </ul>
 {% endblock %}
