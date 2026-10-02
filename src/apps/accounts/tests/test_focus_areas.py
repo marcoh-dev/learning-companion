@@ -151,3 +151,22 @@ class FocusAreaLimitTests(TestCase):
 
         self.assertRedirects(response, PROFILE_URL)
         self.assertEqual(names(self.user.profile), sorted(self.ten))
+
+
+class ForeignTagTests(TestCase):
+    def test_posting_a_tag_that_is_not_offered_is_rejected(self):
+        bob = create_user("bob")
+        secret = tag("secret-b")
+        bob.profile.focus_areas.add(secret)
+        ada = create_user("ada", name="Ada")
+        self.client.force_login(ada)
+
+        response = self.client.post(PROFILE_URL, {"name": "Changed", "cohort": "", "focus_areas": [secret.pk]})
+
+        self.assertContains(
+            response,
+            f"Select a valid choice. {secret.pk} is not one of the available choices.",
+            status_code=200,
+        )
+        ada.profile.refresh_from_db()
+        self.assertEqual((ada.profile.name, names(ada.profile)), ("Ada", []))
