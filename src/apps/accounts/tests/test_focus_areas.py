@@ -190,6 +190,12 @@ class FocusAreaLimitTests(TestCase):
         self.assertRedirects(response, PROFILE_URL)
         self.assertEqual(names(self.user.profile), sorted(self.ten))
 
+    def test_new_tag_equal_to_a_ticked_one_is_not_counted_twice(self):
+        response = self.post(new_tag="Python")
+
+        self.assertRedirects(response, PROFILE_URL)
+        self.assertEqual(names(self.user.profile), sorted(self.ten))
+
 
 class ForeignTagTests(TestCase):
     def test_posting_a_tag_that_is_not_offered_is_rejected(self):
