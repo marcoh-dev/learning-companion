@@ -170,3 +170,15 @@ class ForeignTagTests(TestCase):
         )
         ada.profile.refresh_from_db()
         self.assertEqual((ada.profile.name, names(ada.profile)), ("Ada", []))
+
+    def test_saving_never_changes_another_users_focus_areas(self):
+        bob = create_user("bob")
+        bob.profile.focus_areas.add(tag("python"), tag("secret-b"))
+        ada = create_user("ada")
+        ada.profile.focus_areas.add(tag("python"))
+        self.client.force_login(ada)
+
+        self.client.post(PROFILE_URL, {"name": "", "cohort": "", "focus_areas": [tag("sql").pk]})
+
+        self.assertEqual(names(ada.profile), ["sql"])
+        self.assertEqual(names(bob.profile), ["python", "secret-b"])

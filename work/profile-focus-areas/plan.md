@@ -49,7 +49,7 @@
 - [x] 9. An invalid `new_tag` (31 chars; `"rust, go"`) returns 200 with the exact error text ("Ensure this value has at most 30 characters (it has 31)." / "Enter one tag at a time."). The profile's focus areas, name and cohort are unchanged, and no new `Tag` exists. impl: the comma check in `clean_new_tag`. The length case is pinned by `max_length=30` on the form field; mutation: `max_length=50` must make that case red. covers: AC7
 - [x] 10. Ticking 10 tags plus a new one (11 in total) returns 200 with "Choose at most 10 focus areas." and saves nothing. Exactly 10 still saves. Fixture: the six starter tags plus four own tags already on the profile. impl: `ProfileForm.clean()`. covers: AC8
 - [x] 11. Posting the id of a tag that isn't offered (another user's private tag) returns 200 with the `invalid_choice` error text, and saves nothing. Pinning; mutation: queryset `Tag.objects.all()` must go red. covers: AC9
-- [ ] 12. A's save leaves B's focus areas unchanged, even when both share a starter tag that A unticks. Pinning; mutation: a `_save_m2m` that applies the same set to every profile must go red. covers: AC10
+- [x] 12. A's save leaves B's focus areas unchanged, even when both share a starter tag that A unticks. Pinning; mutation: a `_save_m2m` that applies the same set to every profile must go red. covers: AC10
 
 ## Coverage
 | AC | Steps |
