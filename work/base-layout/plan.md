@@ -24,7 +24,7 @@
 - [x] 5. `base.html` includes exactly one stylesheet link, and its href is the Pico.css CDN URL. impl: `base.html` `<head>`. covers: AC3
 - [x] 6. The page has a `<nav>` containing the brand link `<a href="/">Learning Companion</a>`. impl: `base.html`. covers: AC5
 - [x] 7. The nav contains links "Goals", "Sessions", "Dashboard", "Log in" and "Sign up" with the placeholder hrefs above (`subTest` table). impl: `base.html`. covers: AC6
-- [ ] 8. Rendering `base.html` with one message in the `messages` context shows that message's text inside the `messages` container. impl: `base.html` (container rendered unconditionally, with the guard left for step 9). covers: AC7
+- [x] 8. Rendering `base.html` with one message in the `messages` context shows that message's text inside the `messages` container. impl: `base.html` (container rendered unconditionally, with the guard left for step 9). covers: AC7
 - [ ] 9. Rendering `base.html` with no messages renders no `class="messages"` container. impl: `base.html` (add the `{% if messages %}` guard around the container). Step 8 renders the container unconditionally as its minimal code, so this test is red until the guard is added. covers: AC7
 - [ ] 10. The home page has `<h1>Learning Companion</h1>` and an intro paragraph mentioning goals, sessions, resources and AI summaries. impl: `home.html`. covers: AC8
 

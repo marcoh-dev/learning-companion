@@ -1,5 +1,7 @@
 import re
 
+from django.contrib.messages import constants
+from django.contrib.messages.storage.base import Message
 from django.template import engines
 from django.test import SimpleTestCase
 
@@ -16,9 +18,9 @@ PLACEHOLDER_NAV_LINKS = [
 ]
 
 
-def render_child(source):
+def render_child(source, context=None):
     """Render a template string that extends base.html."""
-    return engines["django"].from_string('{% extends "base.html" %}' + source).render()
+    return engines["django"].from_string('{% extends "base.html" %}' + source).render(context)
 
 
 def render_nav():
@@ -73,3 +75,8 @@ class BaseLayoutTests(SimpleTestCase):
         for label, href in PLACEHOLDER_NAV_LINKS:
             with self.subTest(label=label):
                 self.assertInHTML(f'<a href="{href}">{label}</a>', nav)
+
+    def test_messages_are_rendered_in_messages_container(self):
+        html = render_child("", {"messages": [Message(constants.SUCCESS, "Goal saved.")]})
+
+        self.assertRegex(html, r'(?s)class="messages".*Goal saved\.')

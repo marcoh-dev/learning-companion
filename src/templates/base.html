@@ -23,6 +23,11 @@
     </nav>
   </header>
   <main class="container">
+    <section class="messages">
+      {% for message in messages %}
+        <article class="{{ message.tags }}">{{ message }}</article>
+      {% endfor %}
+    </section>
     {% block content %}{% endblock %}
   </main>
 </body>
