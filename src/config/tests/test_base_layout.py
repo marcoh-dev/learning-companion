@@ -6,6 +6,15 @@ from django.test import SimpleTestCase
 
 PICO_CSS_URL = "https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
 
+# Hard-coded until the tickets that build these pages replace them with {% url %}.
+PLACEHOLDER_NAV_LINKS = [
+    ("Goals", "/goals/"),
+    ("Sessions", "/sessions/"),
+    ("Dashboard", "/dashboard/"),
+    ("Log in", "/accounts/login/"),
+    ("Sign up", "/accounts/signup/"),
+]
+
 
 def render_child(source):
     """Render a template string that extends base.html."""
@@ -57,3 +66,10 @@ class BaseLayoutTests(SimpleTestCase):
         nav = render_nav()
 
         self.assertInHTML('<a href="/">Learning Companion</a>', nav)
+
+    def test_nav_has_placeholder_links_for_upcoming_pages(self):
+        nav = render_nav()
+
+        for label, href in PLACEHOLDER_NAV_LINKS:
+            with self.subTest(label=label):
+                self.assertInHTML(f'<a href="{href}">{label}</a>', nav)
