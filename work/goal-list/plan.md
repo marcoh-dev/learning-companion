@@ -28,7 +28,7 @@
 - **Nav test:** proves that the Goals link uses `{% url 'goal-list' %}` and not a literal `/goals/`. It renders the nav under `override_settings(ROOT_URLCONF=...)` with a test URLconf that maps `goal-list` to a different path. A plain href assertion would already pass with the hard-coded link.
 
 ## Steps
-- [ ] 1. **Goal model core fields.** `title` is required with max_length 200, `description` is blank-allowed, `owner` is a FK to the user with CASCADE, and `str()` is the title. Also adds a guard test that `makemigrations --check --dry-run` reports no changes (it passes before and after, so it doesn't count as the red test).
+- [x] 1. **Goal model core fields.** `title` is required with max_length 200, `description` is blank-allowed, `owner` is a FK to the user with CASCADE, and `str()` is the title. Also adds a guard test that `makemigrations --check --dry-run` reports no changes (it passes before and after, so it doesn't count as the red test).
   - test: `src/apps/goals/tests/test_goal_model.py`
   - impl: new app `src/apps/goals/` (`apps.py`, `models.py`, `migrations/0001_initial.py` via makemigrations), `INSTALLED_APPS`
   - covers: AC1 (title/description/owner, migration), AC4, AC5
