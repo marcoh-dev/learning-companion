@@ -7,6 +7,8 @@ from .models import Profile
 
 
 class ProfileForm(forms.ModelForm):
+    new_tag = forms.CharField(max_length=30, required=False, label='New focus area')
+
     class Meta:
         model = Profile
         fields = ['name', 'cohort', 'focus_areas']
@@ -18,3 +20,13 @@ class ProfileForm(forms.ModelForm):
         self.fields['focus_areas'].queryset = Tag.objects.filter(
             Q(starter=True) | Q(profiles=self.instance)
         ).distinct()
+
+    def clean_new_tag(self):
+        return self.cleaned_data['new_tag'].lower()
+
+    def _save_m2m(self):
+        super()._save_m2m()
+        new_tag = self.cleaned_data['new_tag']
+        if new_tag:
+            # Reuse the shared tag of that name instead of creating a duplicate.
+            self.instance.focus_areas.add(Tag.objects.get_or_create(name=new_tag)[0])

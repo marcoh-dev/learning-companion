@@ -87,3 +87,24 @@ class SaveFocusAreaTests(TestCase):
 
         self.assertRedirects(response, PROFILE_URL)
         self.assertEqual(names(self.user.profile), ["rust", "sql"])
+
+    def test_new_tag_is_normalised_and_added_with_the_ticked_ones(self):
+        self.post("python", new_tag="  Go ")
+
+        self.assertEqual(names(self.user.profile), ["go", "python"])
+
+    def test_new_tag_reuses_an_existing_tag_of_that_name(self):
+        tag_count = Tag.objects.count()
+
+        self.post("rust", new_tag="Python")
+
+        self.assertEqual(names(self.user.profile), ["python", "rust"])
+        self.assertEqual(Tag.objects.count(), tag_count)
+
+    def test_blank_new_tag_is_ignored(self):
+        tag_count = Tag.objects.count()
+
+        self.post("python", new_tag="   ")
+
+        self.assertEqual(names(self.user.profile), ["python"])
+        self.assertEqual(Tag.objects.count(), tag_count)
