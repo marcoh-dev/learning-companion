@@ -6,15 +6,15 @@ As a signed-in learner, I want to filter my goal list by status and see how many
 ## Acceptance criteria
 "Own goals" means goals owned by the signed-in user. The list stays login-required, owner-scoped and ordered newest updated first, as shipped in goal-list.
 
-- [ ] AC1 GET `/goals/?status=<value>` for each of `planned`, `in_progress` and `done` lists only the own goals with that status, still ordered by `updated_at`, newest first.
-- [ ] AC2 GET `/goals/` without `status` lists all own goals, as before.
-- [ ] AC3 An unknown or empty `status` (e.g. `?status=archived`, `?status=`) returns 200 with the unfiltered list, exactly as without the parameter.
-- [ ] AC4 The page has a GET form whose action is the goal list: a `<select name="status">` with the options All (value `""`), Planned, In progress and Done, plus a "Filter" submit button.
-- [ ] AC5 The select preselects the active filter: the matching status when `status` is valid, otherwise All.
-- [ ] AC6 Each option label shows the count of own goals for that option, e.g. "All (5)", "Planned (2)", "In progress (1)", "Done (2)". Other users' goals are never counted, and the counts don't change with the active filter.
-- [ ] AC7 When a valid filter matches no own goals but the user has goals in other statuses, the page shows "No <label lower-cased> goals." (e.g. "No done goals.", "No in progress goals.") instead of "No goals yet". The filter form is still shown.
-- [ ] AC8 A user with no goals at all still sees "No goals yet" (with any or no filter), and the "New goal" link keeps working as before.
-- [ ] AC9 Filtering never shows another user's goals: with `?status=done`, Bob's done goal doesn't appear on Ada's list.
+- [x] AC1 GET `/goals/?status=<value>` for each of `planned`, `in_progress` and `done` lists only the own goals with that status, still ordered by `updated_at`, newest first.
+- [x] AC2 GET `/goals/` without `status` lists all own goals, as before.
+- [x] AC3 An unknown or empty `status` (e.g. `?status=archived`, `?status=`) returns 200 with the unfiltered list, exactly as without the parameter.
+- [x] AC4 The page has a GET form whose action is the goal list: a `<select name="status">` with the options All (value `""`), Planned, In progress and Done, plus a "Filter" submit button.
+- [x] AC5 The select preselects the active filter: the matching status when `status` is valid, otherwise All.
+- [x] AC6 Each option label shows the count of own goals for that option, e.g. "All (5)", "Planned (2)", "In progress (1)", "Done (2)". Other users' goals are never counted, and the counts don't change with the active filter.
+- [x] AC7 When a valid filter matches no own goals but the user has goals in other statuses, the page shows "No <label lower-cased> goals." (e.g. "No done goals.", "No in progress goals.") instead of "No goals yet". The filter form is still shown.
+- [x] AC8 A user with no goals at all still sees "No goals yet" (with any or no filter), and the "New goal" link keeps working as before.
+- [x] AC9 Filtering never shows another user's goals: with `?status=done`, Bob's done goal doesn't appear on Ada's list.
 
 ## Out of scope
 - Filter links or auto-submit with JavaScript (the select uses a plain submit button).
