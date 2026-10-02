@@ -22,7 +22,10 @@ class ProfileForm(forms.ModelForm):
         ).distinct()
 
     def clean_new_tag(self):
-        return self.cleaned_data['new_tag'].lower()
+        new_tag = self.cleaned_data['new_tag'].lower()
+        if ',' in new_tag:
+            raise forms.ValidationError('Enter one tag at a time.')
+        return new_tag
 
     def _save_m2m(self):
         super()._save_m2m()

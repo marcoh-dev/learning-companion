@@ -108,3 +108,20 @@ class SaveFocusAreaTests(TestCase):
 
         self.assertEqual(names(self.user.profile), ["python"])
         self.assertEqual(Tag.objects.count(), tag_count)
+
+    def test_invalid_new_tag_shows_error_and_saves_nothing(self):
+        cases = {
+            "longer than 30 chars": ("x" * 31, "Ensure this value has at most 30 characters (it has 31)."),
+            "more than one tag": ("rust, go", "Enter one tag at a time."),
+        }
+        tag_count = Tag.objects.count()
+
+        for case, (value, error) in cases.items():
+            with self.subTest(case=case):
+                response = self.post("sql", name="Changed", new_tag=value)
+
+                self.assertContains(response, error, status_code=200)
+                self.user.profile.refresh_from_db()
+                self.assertEqual(self.user.profile.name, "Ada")
+                self.assertEqual(names(self.user.profile), ["python", "rust"])
+                self.assertEqual(Tag.objects.count(), tag_count)
