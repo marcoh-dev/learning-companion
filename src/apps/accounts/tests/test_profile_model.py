@@ -20,3 +20,13 @@ class ProfileCreationTests(TestCase):
         admin.save()
 
         self.assertEqual(Profile.objects.filter(user=admin).count(), 1)
+
+    def test_signup_creates_a_profile_for_the_new_user(self):
+        password = "correct-horse-battery-9"
+
+        self.client.post(
+            "/accounts/signup/", {"username": "ada", "password1": password, "password2": password}
+        )
+
+        user = get_user_model().objects.get(username="ada")
+        self.assertEqual(Profile.objects.filter(user=user).count(), 1)
