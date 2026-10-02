@@ -80,3 +80,8 @@ class BaseLayoutTests(SimpleTestCase):
         html = render_child("", {"messages": [Message(constants.SUCCESS, "Goal saved.")]})
 
         self.assertRegex(html, r'(?s)class="messages".*Goal saved\.')
+
+    def test_no_messages_container_without_messages(self):
+        html = render_child("", {"messages": []})
+
+        self.assertNotIn('class="messages"', html)
