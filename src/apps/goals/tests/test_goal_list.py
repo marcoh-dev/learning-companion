@@ -1,4 +1,5 @@
 import re
+from datetime import datetime, timezone as dt_timezone
 
 from django.contrib.auth import get_user_model
 from django.test import TestCase
@@ -74,3 +75,30 @@ class GoalRowTests(TestCase):
         response = self.client.get(GOALS_URL)
 
         self.assertEqual(goal_rows(response), ["Learn Django In progress"])
+
+
+class GoalOrderingTests(TestCase):
+    def setUp(self):
+        self.ada = create_user("ada")
+        self.client.force_login(self.ada)
+
+    def updated_at(self, goal, day):
+        Goal.objects.filter(pk=goal.pk).update(
+            updated_at=datetime(2026, 10, day, 12, 0, tzinfo=dt_timezone.utc)
+        )
+
+    def test_goals_are_listed_newest_updated_first(self):
+        sql = Goal.objects.create(owner=self.ada, title="Learn SQL")
+        docker = Goal.objects.create(owner=self.ada, title="Learn Docker")
+        django = Goal.objects.create(owner=self.ada, title="Learn Django")
+        self.updated_at(sql, 2)
+        self.updated_at(docker, 1)
+        self.updated_at(django, 3)
+
+        response = self.client.get(GOALS_URL)
+
+        self.assertQuerySetEqual(response.context["goal_list"], [django, sql, docker])
+        self.assertEqual(
+            goal_rows(response),
+            ["Learn Django Planned", "Learn SQL Planned", "Learn Docker Planned"],
+        )

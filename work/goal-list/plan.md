@@ -52,7 +52,7 @@
   - test: `test_goal_list.py`
   - impl: template
   - covers: AC8 (content)
-- [ ] 7. **Newest updated first.** Three goals with `updated_at` set via `QuerySet.update()` appear in `-updated_at` order, asserted on `response.context["goal_list"]` and on title order in the HTML.
+- [x] 7. **Newest updated first.** Three goals with `updated_at` set via `QuerySet.update()` appear in `-updated_at` order, asserted on `response.context["goal_list"]` and on title order in the HTML.
   - test: `test_goal_list.py`
   - impl: `views.py` (`order_by`)
   - covers: AC8 (ordering)

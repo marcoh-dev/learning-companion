@@ -6,4 +6,4 @@ class GoalListView(LoginRequiredMixin, ListView):
     template_name = "goals/goal_list.html"
 
     def get_queryset(self):
-        return self.request.user.goals.all()
+        return self.request.user.goals.order_by("-updated_at")
