@@ -17,8 +17,6 @@ PLACEHOLDER_NAV_LINKS = [
     ("Goals", "/goals/"),
     ("Sessions", "/sessions/"),
     ("Dashboard", "/dashboard/"),
-    ("Log in", "/accounts/login/"),
-    ("Sign up", "/accounts/signup/"),
 ]
 
 
