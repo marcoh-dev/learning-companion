@@ -220,3 +220,14 @@ class SetupDocsTests(SimpleTestCase):
         for doc in ["CLAUDE.md", "README.md"]:
             with self.subTest(doc=doc):
                 self.assertIn("cp .env.example .env", (REPO_ROOT / doc).read_text())
+
+    def test_claude_md_describes_the_placeholder_rule_and_the_manage_py_test_exception(self):
+        text = (REPO_ROOT / "CLAUDE.md").read_text()
+
+        self.assertIn("placeholder", text)
+        self.assertIn("`manage.py test`", text)
+
+    def test_env_example_says_inline_comments_are_not_supported(self):
+        text = ENV_EXAMPLE_PATH.read_text()
+
+        self.assertIn("Inline comments after a value are not supported", text)

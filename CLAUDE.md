@@ -17,7 +17,7 @@ cp .env.example .env                            # local settings (git-ignored), 
 
 Always pass `src -t src` to `test`. Without it, Django discovers from the repo root, finds 0 tests and exits 0, so a broken suite would look green.
 
-`SECRET_KEY`, `DEBUG` and `ALLOWED_HOSTS` come from the environment or `.env` at the repository root (`src/config/env.py`). Without a `SECRET_KEY`, settings refuse to load unless `DEBUG` is True or the command is `test`, so the suite needs no `.env`.
+`SECRET_KEY`, `DEBUG` and `ALLOWED_HOSTS` come from the environment or `.env` at the repository root (`src/config/env.py`). Without a real `SECRET_KEY` (a missing, blank or placeholder key such as `change-me` or `django-insecure-...` counts as none), settings refuse to load unless `DEBUG` is True or the command is `manage.py test`, so the suite needs no `.env`.
 
 After installing a new dependency, update `requirements.txt` with `.venv/bin/pip freeze > requirements.txt`.
 
