@@ -6,3 +6,9 @@ class HomePageTests(SimpleTestCase):
         response = self.client.get("/")
 
         self.assertEqual(response.status_code, 200)
+
+    def test_home_page_renders_home_template_extending_base(self):
+        response = self.client.get("/")
+
+        self.assertTemplateUsed(response, "home.html")
+        self.assertTemplateUsed(response, "base.html")

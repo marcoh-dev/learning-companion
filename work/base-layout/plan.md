@@ -18,7 +18,7 @@
 
 ## Steps
 - [x] 1. `GET /` returns 200 for an anonymous visitor. test: `src/config/tests/test_base_layout.py`. impl: `src/config/urls.py` (home route), `src/config/settings.py` (`DIRS`), `src/templates/home.html` (minimal). covers: AC1
-- [ ] 2. The home response uses both `home.html` and `base.html` (`assertTemplateUsed`). impl: `src/templates/base.html` with a `content` block; `home.html` extends it. covers: AC2
+- [x] 2. The home response uses both `home.html` and `base.html` (`assertTemplateUsed`). impl: `src/templates/base.html` with a `content` block; `home.html` extends it. covers: AC2
 - [ ] 3. A child template that extends `base.html` and overrides the `title` and `content` blocks gets them rendered inside `<title>` and the page body. impl: `base.html` (`title` block). covers: AC4
 - [ ] 4. The home page `<title>` contains "Learning Companion". impl: `home.html` (`title` block). covers: AC4
 - [ ] 5. `base.html` includes exactly one stylesheet link, and its href is the Pico.css CDN URL. impl: `base.html` `<head>`. covers: AC3
