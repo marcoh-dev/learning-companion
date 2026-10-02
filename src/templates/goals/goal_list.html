@@ -4,10 +4,11 @@
 
 {% block content %}
   <h1>Your goals</h1>
+  <p><a href="{% url 'goal-create' %}">New goal</a></p>
   {% if goal_list %}
     <ul class="goal-list">
       {% for goal in goal_list %}
-        <li><strong>{{ goal.title }}</strong> <mark>{{ goal.get_status_display }}</mark></li>
+        <li><strong><a href="{{ goal.get_absolute_url }}">{{ goal.title }}</a></strong> <mark>{{ goal.get_status_display }}</mark></li>
       {% endfor %}
     </ul>
   {% else %}
