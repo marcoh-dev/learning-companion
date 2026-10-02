@@ -12,4 +12,11 @@
     <dt>Cohort</dt>
     <dd>{{ profile.get_cohort_display|default:"not set" }}</dd>
   </dl>
+
+  <h2>Edit profile</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_div }}
+    <button type="submit">Save</button>
+  </form>
 {% endblock %}

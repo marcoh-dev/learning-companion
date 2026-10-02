@@ -46,3 +46,9 @@ class ProfilePageTests(TestCase):
         for text in ("ada", "Ada Lovelace", "2026 Autumn"):
             with self.subTest(text=text):
                 self.assertIn(text, content)
+
+    def test_profile_page_has_edit_form_prefilled_with_current_values(self):
+        response = self.client.get(PROFILE_URL)
+
+        self.assertRegex(response.content.decode(), r'<input[^>]*name="name"[^>]*value="Ada Lovelace"')
+        self.assertInHTML('<option value="2026-autumn" selected>2026 Autumn</option>', response.content.decode())
