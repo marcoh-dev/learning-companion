@@ -35,7 +35,7 @@
   - test: `test_goal_filter.py`
   - impl: `views.py` (`active_status()` validation)
   - covers: AC2, AC3
-- [ ] 3. **Filter form with a preselected option.**
+- [x] 3. **Filter form with a preselected option.**
   - The page has a GET form whose action is `/goals/`, containing `<select name="status">` with option values `["", "planned", "in_progress", "done"]` and labels starting with All/Planned/In progress/Done, plus a "Filter" submit button.
   - The selected option is the active status for each valid value, and `""` for no parameter, `?status=archived` and `?status=`.
   - test: `test_goal_filter.py`

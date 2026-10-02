@@ -28,6 +28,15 @@ class GoalListView(OwnGoalMixin, ListView):
             goals = goals.filter(status=status)
         return goals
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        active = self.active_status()
+        context["status_options"] = [
+            {"value": value, "label": label, "selected": value == active}
+            for value, label in [("", "All"), *Goal.Status.choices]
+        ]
+        return context
+
 
 class GoalDetailView(OwnGoalMixin, DetailView):
     template_name = "goals/goal_detail.html"
