@@ -12,6 +12,12 @@ def render_child(source):
     return engines["django"].from_string('{% extends "base.html" %}' + source).render()
 
 
+def render_nav():
+    """Return the <nav> element of the rendered base layout ("" if there is none)."""
+    match = re.search(r"<nav\b.*?</nav>", render_child(""), re.DOTALL)
+    return match.group(0) if match else ""
+
+
 class HomePageTests(SimpleTestCase):
     def test_home_page_returns_200_for_anonymous_visitor(self):
         response = self.client.get("/")
@@ -46,3 +52,8 @@ class BaseLayoutTests(SimpleTestCase):
         links = [tag for tag in re.findall(r"<link\b[^>]*>", html) if 'rel="stylesheet"' in tag]
         self.assertEqual(len(links), 1)
         self.assertIn(f'href="{PICO_CSS_URL}"', links[0])
+
+    def test_nav_has_brand_link_to_home(self):
+        nav = render_nav()
+
+        self.assertInHTML('<a href="/">Learning Companion</a>', nav)
