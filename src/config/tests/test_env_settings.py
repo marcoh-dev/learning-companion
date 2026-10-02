@@ -85,12 +85,17 @@ class ReadSettingsTests(SimpleTestCase):
             env_file = Path(tmp) / ".env"
             env_file.write_text(
                 "SECRET_KEY=from-file\nDEBUG=True\nALLOWED_HOSTS=file.example.com\n"
+                "ENV_SETTINGS_TEST_ONLY=from-file\n"
             )
 
-            result = read({"SECRET_KEY": "from-env"}, env_file=env_file)
+            # patch.dict restores os.environ even if a regression writes to it.
+            with mock.patch.dict(os.environ):
+                environ_before = dict(os.environ)
+                result = read({"SECRET_KEY": "from-env"}, env_file=env_file)
+                environ_after = dict(os.environ)
 
+        self.assertEqual(environ_after, environ_before)
         self.assertEqual(result["SECRET_KEY"], "from-env")
-        self.assertNotIn("ALLOWED_HOSTS", os.environ)
         self.assertIs(result["DEBUG"], True)
         self.assertEqual(result["ALLOWED_HOSTS"], ["file.example.com"])
 
