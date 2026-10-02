@@ -40,7 +40,7 @@
 - [x] 10. `POST /accounts/logout/` logs the user out and redirects to the login page. impl: `logout` route (`LogoutView`), `LOGOUT_REDIRECT_URL = 'login'`. covers: AC8
 - [x] 11. `GET /accounts/logout/` does not log the user out (405, still authenticated). Pinning test; mutation: `http_method_names = ['get', 'post', 'options']` on the logout view must make it red. covers: AC8
 - [x] 12. For an anonymous visitor the nav has "Log in" → `reverse('login')` and "Sign up" → `reverse('signup')`, and no log-out form. Remove "Log in"/"Sign up" from `PLACEHOLDER_NAV_LINKS` in `src/config/tests/test_base_layout.py`; this is a deliberate test change, called out in the commit. The new test passes against the current hard-coded hrefs, so switch `base.html` to `{% url 'login' %}` / `{% url 'signup' %}` as the refactor. Mutation: point "Sign up" at the wrong URL. test: `src/apps/accounts/tests/test_nav.py`. covers: AC9
-- [ ] 13. For a logged-in user the nav shows "Signed in as <username>" and a `POST` form aimed at `reverse('logout')` with a CSRF token input and a "Log out" button, and shows no "Log in"/"Sign up" links. impl: `{% if user.is_authenticated %}` branch in `base.html`. test: `src/apps/accounts/tests/test_nav.py`. covers: AC10
+- [x] 13. For a logged-in user the nav shows "Signed in as <username>" and a `POST` form aimed at `reverse('logout')` with a CSRF token input and a "Log out" button, and shows no "Log in"/"Sign up" links. impl: `{% if user.is_authenticated %}` branch in `base.html`. test: `src/apps/accounts/tests/test_nav.py`. covers: AC10
 
 ## Coverage
 | AC | Steps |

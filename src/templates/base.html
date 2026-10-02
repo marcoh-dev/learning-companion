@@ -19,8 +19,19 @@
         <li><a href="/dashboard/">Dashboard</a></li>
       </ul>
       <ul>
-        <li><a href="{% url 'login' %}">Log in</a></li>
-        <li><a href="{% url 'signup' %}">Sign up</a></li>
+        {% if user.is_authenticated %}
+          <li>Signed in as {{ user.get_username }}</li>
+          <li>
+            {# LogoutView only accepts POST, so logging out is a form, not a link. #}
+            <form method="post" action="{% url 'logout' %}">
+              {% csrf_token %}
+              <button type="submit">Log out</button>
+            </form>
+          </li>
+        {% else %}
+          <li><a href="{% url 'login' %}">Log in</a></li>
+          <li><a href="{% url 'signup' %}">Sign up</a></li>
+        {% endif %}
       </ul>
     </nav>
   </header>
