@@ -29,7 +29,7 @@
 - [x] 9. A non-existent `env_file` loads the defaults without raising and without emitting a warning/log message (`assertNoLogs`, `warnings.catch_warnings`) — test: `test_env_settings.py` — impl: `config/env.py` — covers: AC3. *If this is green right after writing it (step 8 already guards the missing file), keep it as a characterization test, note that in the commit message and don't add production code.*
 - [x] 10. `config.settings` takes `SECRET_KEY`/`DEBUG`/`ALLOWED_HOSTS` from `read_settings(os.environ, BASE_DIR.parent / ".env", sys.argv)`, and `settings.py` no longer contains the old hardcoded key (checked via a fragment built at runtime so the test file doesn't contain the literal either) — test: `test_env_settings.py` (patch + `importlib.reload`) — impl: `src/config/settings.py` — covers: AC2, AC9
 - [x] 11. `.env.example` at the repo root lists `SECRET_KEY=change-me`, `DEBUG=True`, `ALLOWED_HOSTS=localhost,127.0.0.1`, `OPENAI_API_KEY=`, `OPENAI_MODEL=`, each preceded by a `#` comment line, and `.env` is in `.gitignore` — test: `test_env_settings.py` — impl: `.env.example` (new) — covers: AC10
-- [ ] 12. The CI `test` job has a job-level `env` with a non-empty `SECRET_KEY` that is not the dev key — test: `src/config/tests/test_ci_workflow.py` — impl: `.github/workflows/ci.yml` — covers: AC12
+- [x] 12. The CI `test` job has a job-level `env` with a non-empty `SECRET_KEY` that is not the dev key — test: `src/config/tests/test_ci_workflow.py` — impl: `.github/workflows/ci.yml` — covers: AC12
 - [ ] 13. `CLAUDE.md` setup commands and `README.md` mention `cp .env.example .env` — test: `test_env_settings.py` — impl: `CLAUDE.md` (Commands block), `README.md` (new project-setup line under Install) — covers: AC13
 
 ## Coverage
