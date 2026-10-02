@@ -5,6 +5,8 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
 
+from config.tests.test_base_layout import render_child
+
 
 def nav_of(response):
     """Return the <nav> element of a rendered page ("" if there is none)."""
@@ -34,10 +36,24 @@ class AnonymousNavTests(TestCase):
     def test_anonymous_nav_links_to_login_and_signup_without_logout(self):
         nav = nav_of(self.client.get("/"))
 
-        self.assertInHTML(f'<a href="{reverse("login")}">Log in</a>', nav)
+        # The Log in link brings the visitor back to the current page (here: /).
+        self.assertInHTML(f'<a href="{reverse("login")}?next=/">Log in</a>', nav)
         self.assertInHTML(f'<a href="{reverse("signup")}">Sign up</a>', nav)
         self.assertNotIn(reverse("logout"), nav)
         self.assertNotIn("Log out", nav)
+
+    def test_login_link_has_no_next_on_the_login_and_signup_pages(self):
+        for url in (reverse("login"), reverse("signup")):
+            with self.subTest(url=url):
+                nav = nav_of(self.client.get(url))
+
+                self.assertInHTML(f'<a href="{reverse("login")}">Log in</a>', nav)
+
+    def test_login_link_has_no_next_when_rendered_without_a_request(self):
+        html = render_child("")
+
+        self.assertNotIn("?next=", html)
+        self.assertInHTML(f'<a href="{reverse("login")}">Log in</a>', html)
 
 
 class LoggedInNavTests(TestCase):
@@ -57,3 +73,8 @@ class LoggedInNavTests(TestCase):
         self.assertInHTML('<button type="submit">Log out</button>', form.group(0))
         self.assertNotIn(">Log in<", nav)
         self.assertNotIn(">Sign up<", nav)
+
+    def test_logged_in_nav_links_to_the_profile_page(self):
+        nav = nav_of(self.client.get("/"))
+
+        self.assertInHTML(f'<a href="{reverse("profile")}">Profile</a>', nav)
