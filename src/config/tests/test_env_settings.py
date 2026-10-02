@@ -4,7 +4,7 @@ from pathlib import Path
 from django.conf import settings
 from django.test import SimpleTestCase
 
-from config.env import read_settings
+from config.env import DEV_SECRET_KEY, read_settings
 
 REPO_ROOT = Path(settings.BASE_DIR).parent
 REQUIREMENTS_PATH = REPO_ROOT / "requirements.txt"
@@ -55,3 +55,9 @@ class ReadSettingsTests(SimpleTestCase):
         result = read({"SECRET_KEY": "k"})
 
         self.assertEqual(result["ALLOWED_HOSTS"], ["localhost", "127.0.0.1"])
+
+    def test_insecure_dev_key_is_used_when_secret_key_is_unset_and_debug_is_on(self):
+        result = read({"DEBUG": "True"})
+
+        self.assertEqual(result["SECRET_KEY"], DEV_SECRET_KEY)
+        self.assertTrue(DEV_SECRET_KEY.startswith("django-insecure-"))
