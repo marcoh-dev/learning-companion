@@ -48,7 +48,7 @@
 - [x] 11. Invalid POSTs (a `name` of 101 chars; `cohort="nope"`) return 200 with the exact rendered error text, and the stored profile is unchanged. `subTest` table. Pinning; mutation: a template that renders the fields without errors must go red. covers: AC7
 - [x] 12. A POST from A that includes `user=<B.pk>` saves A's name on A's profile, leaves B's profile unchanged, and doesn't move A's profile to B. Pinning; mutation: `ProfileForm.Meta.fields` including `'user'` must go red. covers: AC8
 - [x] 13. A logged-in user whose profile was deleted gets 200 on `GET /accounts/profile/`, and a fresh empty profile exists afterwards. impl: `get_or_create` in `get_object()`. covers: AC9
-- [ ] 14. The logged-in nav contains `<a href="/accounts/profile/">Profile</a>`. test: `test_nav.py`. impl: `base.html` authenticated branch. covers: AC10
+- [x] 14. The logged-in nav contains `<a href="/accounts/profile/">Profile</a>`. test: `test_nav.py`. impl: `base.html` authenticated branch. covers: AC10
 - [ ] 15. On `/` the anonymous nav's Log in link is `/accounts/login/?next=/`. This deliberately updates `AnonymousNavTests`, whose old exact `reverse("login")` href would otherwise fail; the commit calls it out. impl: the conditional `?next=` in `base.html`. covers: AC11
 - [ ] 16. On `/accounts/login/` and `/accounts/signup/` the anonymous Log in link is exactly `/accounts/login/` with no `next`, and rendering `base.html` without a request (`render_child`) produces no `?next=`. impl: the login/signup exclusion and empty-path guard. Expected red after step 15, because the login page would link to itself with `next`. covers: AC11
 

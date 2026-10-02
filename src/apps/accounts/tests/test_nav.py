@@ -57,3 +57,8 @@ class LoggedInNavTests(TestCase):
         self.assertInHTML('<button type="submit">Log out</button>', form.group(0))
         self.assertNotIn(">Log in<", nav)
         self.assertNotIn(">Sign up<", nav)
+
+    def test_logged_in_nav_links_to_the_profile_page(self):
+        nav = nav_of(self.client.get("/"))
+
+        self.assertInHTML(f'<a href="{reverse("profile")}">Profile</a>', nav)

@@ -21,6 +21,7 @@
       <ul>
         {% if user.is_authenticated %}
           <li>Signed in as {{ user.get_username }}</li>
+          <li><a href="{% url 'profile' %}">Profile</a></li>
           <li>
             {# LogoutView only accepts POST, so logging out is a form, not a link. #}
             <form method="post" action="{% url 'logout' %}">
