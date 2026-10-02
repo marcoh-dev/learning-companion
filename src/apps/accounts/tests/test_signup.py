@@ -1,7 +1,13 @@
+from django.contrib.auth import get_user_model
 from django.test import TestCase
 
 
 SIGNUP_URL = "/accounts/signup/"
+PASSWORD = "correct-horse-battery-9"
+
+
+def signup_data(username="ada", password1=PASSWORD, password2=PASSWORD):
+    return {"username": username, "password1": password1, "password2": password2}
 
 
 class SignUpPageTests(TestCase):
@@ -14,3 +20,11 @@ class SignUpPageTests(TestCase):
         for field in ("username", "password1", "password2"):
             with self.subTest(field=field):
                 self.assertContains(response, f'name="{field}"')
+
+
+class ValidSignUpTests(TestCase):
+    def test_valid_signup_creates_user_and_redirects_home(self):
+        response = self.client.post(SIGNUP_URL, signup_data())
+
+        self.assertTrue(get_user_model().objects.filter(username="ada").exists())
+        self.assertRedirects(response, "/")
