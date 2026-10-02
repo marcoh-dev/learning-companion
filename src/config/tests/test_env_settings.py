@@ -150,11 +150,18 @@ class SettingsWiringTests(SimpleTestCase):
         self.assertEqual(module.ALLOWED_HOSTS, ["patched.example"])
 
     def test_the_old_hardcoded_secret_key_is_gone_from_src(self):
-        # Assembled at runtime so this file doesn't contain the old key either.
-        old_key_fragment = "django-insecure-" + "4$t-4q$zq9"
-        sources = Path(settings.BASE_DIR).rglob("*.py")
+        # Joined at runtime (not `+`, which the compiler folds) so neither this file nor its
+        # .pyc contains the old key either.
+        old_key_fragment = "".join(["django-insecure-", "4$t-4q$zq9"])
+        files = [
+            path
+            for path in Path(settings.BASE_DIR).rglob("*")
+            if path.is_file() and path.name != "db.sqlite3"
+        ]
 
-        offenders = [str(path) for path in sources if old_key_fragment in path.read_text()]
+        offenders = [
+            str(path) for path in files if old_key_fragment in path.read_text(errors="ignore")
+        ]
 
         self.assertEqual(offenders, [])
 
