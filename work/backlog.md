@@ -15,7 +15,7 @@ then add a plain `- [ ] <title> (#N)` line here.
 - [x] user-profile: Profile model and own-profile page (#5) — work/user-profile/review.md
 - [x] profile-focus-areas: Profile focus areas (tags) (#6) — work/profile-focus-areas/review.md
 - [x] goal-list: Goal model and goal list (#7) — work/goal-list/review.md
-- [~] goal-crud: Create, edit and delete goals (#8)
+- [x] goal-crud: Create, edit and delete goals (#8) — work/goal-crud/review.md
 - [ ] Filter goals by status (#9)
 - [ ] Learning session model and CRUD (#10)
 - [ ] Tags on learning sessions (#11)
