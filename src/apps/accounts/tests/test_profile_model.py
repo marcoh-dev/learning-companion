@@ -30,3 +30,31 @@ class ProfileCreationTests(TestCase):
 
         user = get_user_model().objects.get(username="ada")
         self.assertEqual(Profile.objects.filter(user=user).count(), 1)
+
+
+class ProfileFieldTests(TestCase):
+    def test_name_is_optional_text_of_at_most_100_chars(self):
+        field = Profile._meta.get_field("name")
+
+        self.assertTrue(field.blank)
+        self.assertEqual(field.max_length, 100)
+
+    def test_cohort_is_optional_and_limited_to_the_fixed_choices(self):
+        field = Profile._meta.get_field("cohort")
+
+        self.assertTrue(field.blank)
+        self.assertEqual(
+            field.choices,
+            [
+                ("2026-spring", "2026 Spring"),
+                ("2026-autumn", "2026 Autumn"),
+                ("2027-spring", "2027 Spring"),
+            ],
+        )
+
+    def test_deleting_the_user_deletes_their_profile(self):
+        user = get_user_model().objects.create_user(username="ada")
+
+        user.delete()
+
+        self.assertFalse(Profile.objects.exists())
