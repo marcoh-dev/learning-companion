@@ -34,7 +34,8 @@ class AnonymousNavTests(TestCase):
     def test_anonymous_nav_links_to_login_and_signup_without_logout(self):
         nav = nav_of(self.client.get("/"))
 
-        self.assertInHTML(f'<a href="{reverse("login")}">Log in</a>', nav)
+        # The Log in link brings the visitor back to the current page (here: /).
+        self.assertInHTML(f'<a href="{reverse("login")}?next=/">Log in</a>', nav)
         self.assertInHTML(f'<a href="{reverse("signup")}">Sign up</a>', nav)
         self.assertNotIn(reverse("logout"), nav)
         self.assertNotIn("Log out", nav)
