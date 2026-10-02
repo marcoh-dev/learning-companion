@@ -12,9 +12,9 @@
       <ul>
         <li><a href="{% url 'home' %}">Learning Companion</a></li>
       </ul>
-      {# Placeholder hrefs until the pages exist; their tickets switch these to {% url %}. #}
+      {# Sessions and Dashboard are placeholder hrefs until their tickets switch them to {% url %}. #}
       <ul>
-        <li><a href="/goals/">Goals</a></li>
+        <li><a href="{% url 'goal-list' %}">Goals</a></li>
         <li><a href="/sessions/">Sessions</a></li>
         <li><a href="/dashboard/">Dashboard</a></li>
       </ul>
