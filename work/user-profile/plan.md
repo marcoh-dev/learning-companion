@@ -50,7 +50,7 @@
 - [x] 13. A logged-in user whose profile was deleted gets 200 on `GET /accounts/profile/`, and a fresh empty profile exists afterwards. impl: `get_or_create` in `get_object()`. covers: AC9
 - [x] 14. The logged-in nav contains `<a href="/accounts/profile/">Profile</a>`. test: `test_nav.py`. impl: `base.html` authenticated branch. covers: AC10
 - [x] 15. On `/` the anonymous nav's Log in link is `/accounts/login/?next=/`. This deliberately updates `AnonymousNavTests`, whose old exact `reverse("login")` href would otherwise fail; the commit calls it out. impl: the conditional `?next=` in `base.html`. covers: AC11
-- [ ] 16. On `/accounts/login/` and `/accounts/signup/` the anonymous Log in link is exactly `/accounts/login/` with no `next`, and rendering `base.html` without a request (`render_child`) produces no `?next=`. impl: the login/signup exclusion and empty-path guard. Expected red after step 15, because the login page would link to itself with `next`. covers: AC11
+- [x] 16. On `/accounts/login/` and `/accounts/signup/` the anonymous Log in link is exactly `/accounts/login/` with no `next`, and rendering `base.html` without a request (`render_child`) produces no `?next=`. impl: the login/signup exclusion and empty-path guard. Expected red after step 15, because the login page would link to itself with `next`. covers: AC11
 
 ## Coverage
 | AC | Steps |

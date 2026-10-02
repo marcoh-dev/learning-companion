@@ -30,7 +30,9 @@
             </form>
           </li>
         {% else %}
-          <li><a href="{% url 'login' %}?next={{ request.path|urlencode }}">Log in</a></li>
+          {# Return to the current page after login, except from the auth pages themselves. #}
+          {% url 'login' as login_url %}{% url 'signup' as signup_url %}
+          <li><a href="{{ login_url }}{% if request.path and request.path != login_url and request.path != signup_url %}?next={{ request.path|urlencode }}{% endif %}">Log in</a></li>
           <li><a href="{% url 'signup' %}">Sign up</a></li>
         {% endif %}
       </ul>

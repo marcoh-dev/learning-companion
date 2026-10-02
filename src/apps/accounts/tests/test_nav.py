@@ -5,6 +5,8 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
 
+from config.tests.test_base_layout import render_child
+
 
 def nav_of(response):
     """Return the <nav> element of a rendered page ("" if there is none)."""
@@ -39,6 +41,19 @@ class AnonymousNavTests(TestCase):
         self.assertInHTML(f'<a href="{reverse("signup")}">Sign up</a>', nav)
         self.assertNotIn(reverse("logout"), nav)
         self.assertNotIn("Log out", nav)
+
+
+    def test_login_link_has_no_next_on_the_login_and_signup_pages(self):
+        for url in (reverse("login"), reverse("signup")):
+            with self.subTest(url=url):
+                nav = nav_of(self.client.get(url))
+
+                self.assertInHTML(f'<a href="{reverse("login")}">Log in</a>', nav)
+
+    def test_login_link_has_no_next_when_rendered_without_a_request(self):
+        html = render_child("")
+
+        self.assertNotIn("?next=", html)
 
 
 class LoggedInNavTests(TestCase):
