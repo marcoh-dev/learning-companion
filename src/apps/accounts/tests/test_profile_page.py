@@ -56,7 +56,8 @@ class ProfilePageTests(TestCase):
 
         response = self.client.get(PROFILE_URL)
 
-        self.assertInHTML("<dd>not set</dd>", response.content.decode(), count=2)
+        # Name, cohort and focus areas.
+        self.assertInHTML("<dd>not set</dd>", response.content.decode(), count=3)
 
     def test_profile_page_has_edit_form_prefilled_with_current_values(self):
         response = self.client.get(PROFILE_URL)
