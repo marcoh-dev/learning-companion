@@ -58,3 +58,26 @@ Suite: 31 tests OK (with and without the shell variables set). `check` (with CI'
 
 ## Reviewed
 commit 1f976e2, 2026-10-02
+
+---
+
+# Review round 3: env-settings
+
+## Verdict: PASS
+
+Round-2 findings 1 and 2 are confirmed fixed by both reviewers (code review: no findings). No high or medium findings, every acceptance criterion is covered, and the suite is green.
+
+## Acceptance criteria
+- AC1–AC13 — same tests as round 2. AC6 now additionally `test_blank_or_padded_placeholder_secret_key_with_debug_off_is_improperly_configured` and `test_real_secret_key_is_returned_without_surrounding_whitespace`. AC10/AC13 now additionally `test_env_example_says_inline_comments_are_not_supported` and `test_claude_md_describes_the_placeholder_rule_and_the_manage_py_test_exception` — PASS
+
+Suite: 35 tests OK (with `SECRET_KEY`/`DEBUG`/`ALLOWED_HOSTS` unset). `check` (with CI's `SECRET_KEY`): no issues.
+
+## Findings (low, not blocking; candidates for a follow-up ticket)
+1. [low] `src/config/env.py:26` (security) — django-environ's `read_env` logs malformed `.env` lines verbatim (`Invalid line: ...`) at WARNING. Settings load before Django logging is configured, so a malformed `SECRET_KEY`/`OPENAI_API_KEY` line could print its value to stderr. Reported by the security reviewer from django-environ's source; not reproduced in this session. — Silence or filter the `environ.environ` logger around `read_env`, plus a test.
+2. [low] `src/config/env.py:31` (security) — `.env` quoting edge case: `SECRET_KEY='change-me' ` (space after the closing quote) keeps the quotes, so the placeholder check misses it. The same goes for the documented-unsupported `change-me # comment`. — Strip one pair of surrounding quotes before the placeholder check.
+3. [low, informational] `.github/workflows/ci.yml:15` (security) — the public CI value `ci-only-not-a-secret` passes the guard when DEBUG is off. Overlaps round-2 finding 4 (minimum key length, out of scope). — Add it to the refused values, or accept the risk together with R2-4.
+
+Still not planned, unchanged: round 1 findings 8–9, round 2 findings 3–4.
+
+## Reviewed
+commit 26ed03e, 2026-10-02
