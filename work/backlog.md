@@ -9,7 +9,7 @@ annotation on each line. To add a ticket: create the issue, add it to the board 
 then add a plain `- [ ] <title> (#N)` line here.
 
 - [x] ci-test-workflow: CI: run the Django test suite on every push and PR (#1) — work/ci-test-workflow/review.md
-- [~] env-settings: Settings from environment (.env) (#2)
+- [x] env-settings: Settings from environment (.env) (#2) — work/env-settings/review.md
 - [ ] Base layout and home page (#3)
 - [ ] Sign up, log in, log out (#4)
 - [ ] Profile model and own-profile page (#5)
