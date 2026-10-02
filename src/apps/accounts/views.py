@@ -25,6 +25,11 @@ class SignUpView(CreateView):
 class ProfileView(LoginRequiredMixin, UpdateView):
     form_class = ProfileForm
     template_name = 'accounts/profile.html'
+    success_url = reverse_lazy('profile')
 
     def get_object(self, queryset=None):
         return self.request.user.profile
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Your profile has been saved.')
+        return super().form_valid(form)

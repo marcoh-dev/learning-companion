@@ -1,6 +1,9 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 
+from apps.accounts.models import Profile
+from config.tests.test_base_layout import messages_section
+
 
 PROFILE_URL = "/accounts/profile/"
 PASSWORD = "correct-horse-battery-9"
@@ -69,3 +72,24 @@ class OwnProfileOnlyTests(TestCase):
                 self.assertNotContains(response, "Bob Distinctive")
                 self.assertNotContains(response, "2027 Spring</dd>")
                 self.assertNotContains(response, '<option value="2027-spring" selected>')
+
+
+class SaveProfileTests(TestCase):
+    def setUp(self):
+        self.user = create_user(name="Ada", cohort="2026-spring")
+        self.client.force_login(self.user)
+
+    def test_valid_post_saves_redirects_and_shows_success_message(self):
+        response = self.client.post(PROFILE_URL, {"name": "Ada Lovelace", "cohort": "2026-autumn"}, follow=True)
+
+        self.assertRedirects(response, PROFILE_URL)
+        profile = Profile.objects.get(user=self.user)
+        self.assertEqual((profile.name, profile.cohort), ("Ada Lovelace", "2026-autumn"))
+        self.assertIn("Your profile has been saved.", messages_section(response.content.decode()))
+
+    def test_blank_name_is_a_valid_save(self):
+        response = self.client.post(PROFILE_URL, {"name": "", "cohort": ""})
+
+        self.assertRedirects(response, PROFILE_URL)
+        profile = Profile.objects.get(user=self.user)
+        self.assertEqual((profile.name, profile.cohort), ("", ""))
