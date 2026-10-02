@@ -25,3 +25,6 @@ class SignUpView(CreateView):
 class ProfileView(LoginRequiredMixin, UpdateView):
     form_class = ProfileForm
     template_name = 'accounts/profile.html'
+
+    def get_object(self, queryset=None):
+        return self.request.user.profile

@@ -1,3 +1,15 @@
 {% extends "base.html" %}
 
 {% block title %}Profile · Learning Companion{% endblock %}
+
+{% block content %}
+  <h1>Your profile</h1>
+  <dl>
+    <dt>Username</dt>
+    <dd>{{ profile.user.get_username }}</dd>
+    <dt>Name</dt>
+    <dd>{{ profile.name|default:"not set" }}</dd>
+    <dt>Cohort</dt>
+    <dd>{{ profile.get_cohort_display|default:"not set" }}</dd>
+  </dl>
+{% endblock %}

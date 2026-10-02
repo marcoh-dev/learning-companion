@@ -29,3 +29,20 @@ class AnonymousProfileTests(TestCase):
 
         # The logged-in page itself is covered by ProfilePageTests.
         self.assertRedirects(response, PROFILE_URL, fetch_redirect_response=False)
+
+
+class ProfilePageTests(TestCase):
+    def setUp(self):
+        self.user = create_user(name="Ada Lovelace", cohort="2026-autumn")
+        self.client.force_login(self.user)
+
+    def test_profile_page_shows_username_name_and_cohort_label(self):
+        response = self.client.get(PROFILE_URL)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "accounts/profile.html")
+        self.assertTemplateUsed(response, "base.html")
+        content = response.content.decode().split("</nav>", 1)[1]
+        for text in ("ada", "Ada Lovelace", "2026 Autumn"):
+            with self.subTest(text=text):
+                self.assertIn(text, content)
