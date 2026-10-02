@@ -60,7 +60,7 @@
   - test: `test_goal_list.py`
   - impl: template `{% if %}…{% else %}`
   - covers: AC9
-- [ ] 9. **Nav Goals link uses `{% url 'goal-list' %}`.**
+- [x] 9. **Nav Goals link uses `{% url 'goal-list' %}`.**
   - The test renders the nav under `override_settings(ROOT_URLCONF=<test urlconf>)`, which maps `goal-list` to `/elsewhere/goals/` and keeps the other named routes, and asserts that the Goals anchor follows it.
   - Remove Goals from `PLACEHOLDER_NAV_LINKS`, keeping Sessions and Dashboard, and add an explicit Goals assertion against `reverse("goal-list")`.
   - Update the placeholder comment in base.html and the stale comment in `test_login.py:47`.
