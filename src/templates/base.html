@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{% endblock %}</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+</head>
+<body>
+  <header class="container">
+    <nav>
+      <ul>
+        <li><a href="{% url 'home' %}">Learning Companion</a></li>
+      </ul>
+      {# Placeholder hrefs until the pages exist; their tickets switch these to {% url %}. #}
+      <ul>
+        <li><a href="/goals/">Goals</a></li>
+        <li><a href="/sessions/">Sessions</a></li>
+        <li><a href="/dashboard/">Dashboard</a></li>
+        <li><a href="/accounts/login/">Log in</a></li>
+        <li><a href="/accounts/signup/">Sign up</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main class="container">
+    {% if messages %}
+      <section class="messages">
+        {% for message in messages %}
+          <article class="{{ message.tags }}">{{ message }}</article>
+        {% endfor %}
+      </section>
+    {% endif %}
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>
