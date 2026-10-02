@@ -10,6 +10,9 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      # Not a secret: settings refuse to start without a key when DEBUG is off.
+      SECRET_KEY: ci-only-not-a-secret
     steps:
       - name: Check out the repository
         uses: actions/checkout@v7
