@@ -67,7 +67,7 @@
   - test: `src/config/tests/test_base_layout.py`
   - impl: `templates/base.html`
   - covers: AC10
-- [ ] 10. **Admin registration.** `admin.site.is_registered(Goal)` holds, its ModelAdmin has `list_display == ("title", "status", "owner", "updated_at")` and `list_filter == ("status",)`, and a superuser GET on the goal changelist returns 200.
+- [x] 10. **Admin registration.** `admin.site.is_registered(Goal)` holds, its ModelAdmin has `list_display == ("title", "status", "owner", "updated_at")` and `list_filter == ("status",)`, and a superuser GET on the goal changelist returns 200.
   - test: `src/apps/goals/tests/test_goal_admin.py`
   - impl: `apps/goals/admin.py`
   - covers: AC11
