@@ -54,6 +54,11 @@ class OwnGoalDetailTests(TestCase):
 
         self.assertContains(response, f'<a href="/goals/{self.goal.pk}/edit/">Edit</a>', html=True)
 
+    def test_detail_links_to_delete_page(self):
+        response = self.client.get(detail_url(self.goal))
+
+        self.assertContains(response, f'<a href="/goals/{self.goal.pk}/delete/">Delete</a>', html=True)
+
     def test_detail_shows_created_and_updated_timestamps(self):
         response = self.client.get(detail_url(self.goal))
 

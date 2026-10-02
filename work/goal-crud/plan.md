@@ -70,7 +70,7 @@
   - test: `apps/goals/tests/test_goal_update.py`, plus one test in `test_goal_detail.py` for the Edit link
   - impl: `views.py` (`GoalUpdateView`), `urls.py`, `goal_form.html` (heading), `goal_detail.html` (Edit link)
   - covers: AC6, AC7, AC8, AC9, AC4 (Edit link)
-- [ ] 5. **Delete page.**
+- [x] 5. **Delete page.**
   - GET `/goals/<id>/delete/` shows a confirmation naming the goal, with a `method="post"` form containing the CSRF token, and the goal still exists.
   - A POST deletes it, redirects to `/goals/`, and shows "Goal deleted.".
   - GET and POST for Bob's goal return 404, and his goal still exists.
