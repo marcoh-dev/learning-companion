@@ -66,7 +66,7 @@
 | AC10 | 12 |
 
 ## Review findings (round 1, see review.md)
-- [ ] 13. Each focus-area checkbox is labelled with its tag name: parse the page, map each `focus_areas` checkbox to its `<label>` text, and assert it equals the tag's `name`. Red: the labels are "Tag object (N)". impl: `Tag.__str__` returning `name`. test: `test_focus_areas.py`. covers: AC4
+- [x] 13. Each focus-area checkbox is labelled with its tag name: parse the page, map each `focus_areas` checkbox to its `<label>` text, and assert it equals the tag's `name`. Red: the labels are "Tag object (N)". impl: `Tag.__str__` returning `name`. test: `test_focus_areas.py`. covers: AC4
 - [ ] 14. When another user also has the starter tag "python", A's form still renders exactly one `focus_areas` checkbox per tag. Count the inputs as a list, not a dict. Pinning; mutation: dropping `.distinct()` from the queryset must go red. test: `test_focus_areas.py`. covers: AC4
 - [ ] 15. A new tag whose lower-cased form is longer than 30 chars (e.g. `"İ" * 30`) is rejected with "Ensure this value has at most 30 characters (it has 60)." and saves nothing. Red: it is currently accepted. impl: in `clean_new_tag`, re-check the length after lower-casing with the same message. test: `test_focus_areas.py`. covers: AC7, AC1
 - [ ] 16. 10 ticked tags plus `new_tag` equal to one of them (e.g. "Python") saves, because there are still 10 distinct tags. Pinning; mutation: counting `len(ticked) + bool(new_tag)` in `clean()` must go red. test: `test_focus_areas.py`. covers: AC8

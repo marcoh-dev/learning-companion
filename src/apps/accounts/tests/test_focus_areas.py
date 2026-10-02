@@ -14,16 +14,29 @@ def tag(name):
 
 
 class FocusAreaCheckboxes(HTMLParser):
-    """Collect the focus_areas checkboxes as {tag name: checked}."""
+    """Collect the focus_areas checkboxes: {pk: checked} and {pk: visible label text}."""
 
     def __init__(self):
         super().__init__()
         self.checked_by_id = {}
+        self.label_by_id = {}
+        self._current = None
 
     def handle_starttag(self, tag, attrs):
         attrs = dict(attrs)
         if tag == "input" and attrs.get("type") == "checkbox" and attrs.get("name") == "focus_areas":
-            self.checked_by_id[int(attrs["value"])] = "checked" in attrs
+            self._current = int(attrs["value"])
+            self.checked_by_id[self._current] = "checked" in attrs
+            self.label_by_id[self._current] = ""
+
+    def handle_data(self, data):
+        if self._current is not None:
+            self.label_by_id[self._current] += data
+
+    def handle_endtag(self, tag):
+        if tag == "label" and self._current is not None:
+            self.label_by_id[self._current] = self.label_by_id[self._current].strip()
+            self._current = None
 
 
 def focus_area_checkboxes(response):
@@ -66,6 +79,16 @@ class FocusAreaFormTests(TestCase):
 
         self.assertNotIn("secret-b", focus_area_checkboxes(response))
         self.assertNotContains(response, "secret-b")
+
+    def test_each_checkbox_is_labelled_with_its_tag_name(self):
+        self.client.force_login(create_user())
+        parser = FocusAreaCheckboxes()
+
+        parser.feed(self.client.get(PROFILE_URL).content.decode())
+
+        names_by_id = dict(Tag.objects.values_list("pk", "name"))
+        self.assertEqual(parser.label_by_id, {pk: names_by_id[pk] for pk in parser.label_by_id})
+        self.assertEqual(sorted(parser.label_by_id.values()), STARTER_TAGS)
 
 
 def names(profile):
