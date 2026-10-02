@@ -7,28 +7,28 @@ As a signed-in learner, I want to create, view, edit and delete my learning goal
 The URLs below are absolute paths. "Another user's goal" means a goal whose `owner` is a different user. All goal pages require login. An anonymous GET to any URL below redirects to `/accounts/login/?next=<that URL>`.
 
 **Create**
-- [ ] AC1 GET `/goals/new/` (`goal-create`) shows a form with `title`, `description` and `status`, with status preselected to "Planned". There is no `owner` field.
-- [ ] AC2 A valid POST to `/goals/new/` creates one goal owned by the signed-in user. A posted `owner` value is ignored. The response redirects to that goal's detail page, which shows the message "Goal created."
-- [ ] AC3 A POST with a blank title, a title over 200 characters, or an unknown status creates no goal and re-renders the form with an error on that field. A 200-character title is accepted.
+- [x] AC1 GET `/goals/new/` (`goal-create`) shows a form with `title`, `description` and `status`, with status preselected to "Planned". There is no `owner` field.
+- [x] AC2 A valid POST to `/goals/new/` creates one goal owned by the signed-in user. A posted `owner` value is ignored. The response redirects to that goal's detail page, which shows the message "Goal created."
+- [x] AC3 A POST with a blank title, a title over 200 characters, or an unknown status creates no goal and re-renders the form with an error on that field. A 200-character title is accepted.
 
 **Detail**
-- [ ] AC4 GET `/goals/<id>/` (`goal-detail`) for an own goal shows the title, status label, description, created and updated timestamps, and links to its edit and delete pages.
-- [ ] AC5 GET `/goals/<id>/` for another user's goal, or for an id that doesn't exist, returns 404.
+- [x] AC4 GET `/goals/<id>/` (`goal-detail`) for an own goal shows the title, status label, description, created and updated timestamps, and links to its edit and delete pages.
+- [x] AC5 GET `/goals/<id>/` for another user's goal, or for an id that doesn't exist, returns 404.
 
 **Edit**
-- [ ] AC6 GET `/goals/<id>/edit/` (`goal-update`) for an own goal shows the form prefilled with its current values.
-- [ ] AC7 A valid POST to `/goals/<id>/edit/` saves the changes and redirects to the goal's detail page, which shows "Goal saved." The owner doesn't change, even if a different `owner` value is posted.
-- [ ] AC8 An invalid edit POST changes nothing and re-renders the form with field errors (same rules as AC3).
-- [ ] AC9 GET or POST `/goals/<id>/edit/` for another user's goal returns 404, and the goal is unchanged.
+- [x] AC6 GET `/goals/<id>/edit/` (`goal-update`) for an own goal shows the form prefilled with its current values.
+- [x] AC7 A valid POST to `/goals/<id>/edit/` saves the changes and redirects to the goal's detail page, which shows "Goal saved." The owner doesn't change, even if a different `owner` value is posted.
+- [x] AC8 An invalid edit POST changes nothing and re-renders the form with field errors (same rules as AC3).
+- [x] AC9 GET or POST `/goals/<id>/edit/` for another user's goal returns 404, and the goal is unchanged.
 
 **Delete**
-- [ ] AC10 GET `/goals/<id>/delete/` (`goal-delete`) for an own goal shows a confirmation naming the goal, with a POST form (CSRF-protected). The GET deletes nothing.
-- [ ] AC11 POST `/goals/<id>/delete/` for an own goal deletes it and redirects to `/goals/`, which shows "Goal deleted."
-- [ ] AC12 GET or POST `/goals/<id>/delete/` for another user's goal returns 404, and the goal still exists.
+- [x] AC10 GET `/goals/<id>/delete/` (`goal-delete`) for an own goal shows a confirmation naming the goal, with a POST form (CSRF-protected). The GET deletes nothing.
+- [x] AC11 POST `/goals/<id>/delete/` for an own goal deletes it and redirects to `/goals/`, which shows "Goal deleted."
+- [x] AC12 GET or POST `/goals/<id>/delete/` for another user's goal returns 404, and the goal still exists.
 
 **List links**
-- [ ] AC13 The goal list shows a "New goal" link to `goal-create`, both above the list and in the empty state.
-- [ ] AC14 Each goal title on the list links to its `goal-detail` page.
+- [x] AC13 The goal list shows a "New goal" link to `goal-create`, both above the list and in the empty state.
+- [x] AC14 Each goal title on the list links to its `goal-detail` page.
 
 ## Out of scope
 - Filtering by status (#9), learning sessions (#10+), resources (#12+), AI summary/next steps (#15, #16).
