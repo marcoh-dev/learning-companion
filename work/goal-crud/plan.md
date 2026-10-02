@@ -48,7 +48,7 @@
   - test: `apps/goals/tests/test_goal_detail.py`
   - impl: `views.py` (`OwnGoalMixin`, `GoalDetailView`), `urls.py`, `templates/goals/goal_detail.html`
   - covers: AC4 (content), AC5
-- [ ] 2. **Create page, GET and invalid POST.**
+- [x] 2. **Create page, GET and invalid POST.**
   - GET `/goals/new/` shows a form with title, description and status inputs, status preselected to "planned", and no owner input. Anonymous access redirects.
   - POSTs with a blank title, a 201-character title or `status="archived"` re-render with Django's error text and create no goal.
   - test: `apps/goals/tests/test_goal_create.py`
