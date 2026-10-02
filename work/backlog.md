@@ -16,7 +16,7 @@ then add a plain `- [ ] <title> (#N)` line here.
 - [x] profile-focus-areas: Profile focus areas (tags) (#6) — work/profile-focus-areas/review.md
 - [x] goal-list: Goal model and goal list (#7) — work/goal-list/review.md
 - [x] goal-crud: Create, edit and delete goals (#8) — work/goal-crud/review.md
-- [ ] Filter goals by status (#9)
+- [x] goal-status-filter: Filter goals by status (#9) — work/goal-status-filter/review.md
 - [ ] Learning session model and CRUD (#10)
 - [ ] Tags on learning sessions (#11)
 - [ ] Resource model and attach form on goal detail (#12)

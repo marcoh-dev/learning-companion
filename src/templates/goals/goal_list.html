@@ -5,12 +5,23 @@
 {% block content %}
   <h1>Your goals</h1>
   <p><a href="{% url 'goal-create' %}">New goal</a></p>
+  <form method="get" action="{% url 'goal-list' %}" class="goal-filter">
+    <label for="goal-filter-status">Status</label>
+    <select name="status" id="goal-filter-status">
+      {% for option in status_options %}
+        <option value="{{ option.value }}"{% if option.selected %} selected{% endif %}>{{ option.label }}</option>
+      {% endfor %}
+    </select>
+    <button type="submit">Filter</button>
+  </form>
   {% if goal_list %}
     <ul class="goal-list">
       {% for goal in goal_list %}
         <li><strong><a href="{{ goal.get_absolute_url }}">{{ goal.title }}</a></strong> <mark>{{ goal.get_status_display }}</mark></li>
       {% endfor %}
     </ul>
+  {% elif has_goals and active_status_label %}
+    <p>No {{ active_status_label|lower }} goals.</p>
   {% else %}
     <p>No goals yet.</p>
   {% endif %}
