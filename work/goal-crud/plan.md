@@ -40,7 +40,7 @@
   - list-link tests go in `test_goal_list.py`.
 
 ## Steps
-- [ ] 1. **Detail page, own goals only.**
+- [x] 1. **Detail page, own goals only.**
   - Signed in as ada, GET `/goals/<id>/` shows the title, status label, description and created/updated timestamps.
   - Bob's goal returns 404, and an unknown id returns 404.
   - Anonymous access redirects to login with `next`.
