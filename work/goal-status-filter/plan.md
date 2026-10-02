@@ -23,7 +23,7 @@
 - **Tests:** a new file `src/apps/goals/tests/test_goal_filter.py` reuses `create_user`, `GOALS_URL` and `goal_rows` from `test_goal_list.py`. A local helper `status_options(response)` parses the `<select name="status">` options into `(value, label, selected)` tuples.
 
 ## Steps
-- [ ] 1. **Filter by a valid status.**
+- [x] 1. **Filter by a valid status.**
   - Ada has goals in each status, and Bob has a done goal.
   - For each of `planned`, `in_progress` and `done`, `?status=<value>` lists exactly Ada's goals with that status (via `response.context["goal_list"]`), ordered newest updated first. Bob's done goal never appears with `?status=done`.
   - test: `test_goal_filter.py`

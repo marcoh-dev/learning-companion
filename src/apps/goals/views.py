@@ -17,7 +17,11 @@ class GoalListView(OwnGoalMixin, ListView):
     template_name = "goals/goal_list.html"
 
     def get_queryset(self):
-        return super().get_queryset().order_by("-updated_at")
+        goals = super().get_queryset().order_by("-updated_at")
+        status = self.request.GET.get("status")
+        if status:
+            goals = goals.filter(status=status)
+        return goals
 
 
 class GoalDetailView(OwnGoalMixin, DetailView):
