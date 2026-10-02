@@ -46,6 +46,16 @@ class HomePageTests(SimpleTestCase):
 
         self.assertRegex(response.content.decode(), r"<title>[^<]*Learning Companion[^<]*</title>")
 
+    def test_home_page_shows_heading_and_intro(self):
+        response = self.client.get("/")
+
+        html = response.content.decode()
+        self.assertInHTML("<h1>Learning Companion</h1>", html)
+        intro = " ".join(re.findall(r"(?s)<p\b[^>]*>(.*?)</p>", html)).lower()
+        for topic in ("goals", "sessions", "resources", "ai summaries"):
+            with self.subTest(topic=topic):
+                self.assertIn(topic, intro)
+
 
 class BaseLayoutTests(SimpleTestCase):
     def test_child_template_fills_title_and_content_blocks(self):
