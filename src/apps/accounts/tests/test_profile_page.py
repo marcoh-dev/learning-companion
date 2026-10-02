@@ -113,3 +113,12 @@ class SaveProfileTests(TestCase):
                 self.assertContains(response, error, status_code=200)
                 profile = Profile.objects.get(user=self.user)
                 self.assertEqual((profile.name, profile.cohort), ("Ada", "2026-spring"))
+
+    def test_post_cannot_touch_another_users_profile(self):
+        bob = create_user("bob", name="Bob", cohort="2027-spring")
+
+        self.client.post(PROFILE_URL, {"name": "Hijacked", "cohort": "2026-autumn", "user": bob.pk})
+
+        own, other = Profile.objects.get(user=self.user), Profile.objects.get(user=bob)
+        self.assertEqual((own.name, own.cohort), ("Hijacked", "2026-autumn"))
+        self.assertEqual((other.name, other.cohort), ("Bob", "2027-spring"))
