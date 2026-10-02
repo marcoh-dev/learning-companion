@@ -19,6 +19,11 @@ class HomePageTests(SimpleTestCase):
         self.assertTemplateUsed(response, "home.html")
         self.assertTemplateUsed(response, "base.html")
 
+    def test_home_page_title_contains_app_name(self):
+        response = self.client.get("/")
+
+        self.assertRegex(response.content.decode(), r"<title>[^<]*Learning Companion[^<]*</title>")
+
 
 class BaseLayoutTests(SimpleTestCase):
     def test_child_template_fills_title_and_content_blocks(self):
