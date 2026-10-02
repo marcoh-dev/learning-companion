@@ -37,6 +37,7 @@ class AnonymousNavTests(TestCase):
         self.assertInHTML(f'<a href="{reverse("login")}">Log in</a>', nav)
         self.assertInHTML(f'<a href="{reverse("signup")}">Sign up</a>', nav)
         self.assertNotIn(reverse("logout"), nav)
+        self.assertNotIn("Log out", nav)
 
 
 class LoggedInNavTests(TestCase):
