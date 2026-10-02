@@ -17,7 +17,7 @@
 - **Tests:** a new module `src/config/tests/test_base_layout.py` with `SimpleTestCase`. Page tests use `self.client.get('/')`; an anonymous request without a session cookie doesn't touch the DB. Layout-only tests (blocks, messages) render templates directly with `django.template.loader.render_to_string` or `Template(...)`. The messages tests pass an explicit `messages` context list of `django.contrib.messages.storage.base.Message`, so they need no request or session.
 
 ## Steps
-- [ ] 1. `GET /` returns 200 for an anonymous visitor. test: `src/config/tests/test_base_layout.py`. impl: `src/config/urls.py` (home route), `src/config/settings.py` (`DIRS`), `src/templates/home.html` (minimal). covers: AC1
+- [x] 1. `GET /` returns 200 for an anonymous visitor. test: `src/config/tests/test_base_layout.py`. impl: `src/config/urls.py` (home route), `src/config/settings.py` (`DIRS`), `src/templates/home.html` (minimal). covers: AC1
 - [ ] 2. The home response uses both `home.html` and `base.html` (`assertTemplateUsed`). impl: `src/templates/base.html` with a `content` block; `home.html` extends it. covers: AC2
 - [ ] 3. A child template that extends `base.html` and overrides the `title` and `content` blocks gets them rendered inside `<title>` and the page body. impl: `base.html` (`title` block). covers: AC4
 - [ ] 4. The home page `<title>` contains "Learning Companion". impl: `home.html` (`title` block). covers: AC4
