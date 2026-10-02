@@ -66,3 +66,24 @@ class FocusAreaFormTests(TestCase):
 
         self.assertNotIn("secret-b", focus_area_checkboxes(response))
         self.assertNotContains(response, "secret-b")
+
+
+def names(profile):
+    return list(profile.focus_areas.values_list("name", flat=True))
+
+
+class SaveFocusAreaTests(TestCase):
+    def setUp(self):
+        self.user = create_user(name="Ada")
+        self.user.profile.focus_areas.add(tag("python"), tag("rust"))
+        self.client.force_login(self.user)
+
+    def post(self, *tag_names, **extra):
+        data = {"name": "Ada", "cohort": "", "focus_areas": [tag(n).pk for n in tag_names]} | extra
+        return self.client.post(PROFILE_URL, data)
+
+    def test_ticked_tags_become_exactly_the_focus_areas(self):
+        response = self.post("rust", "sql")
+
+        self.assertRedirects(response, PROFILE_URL)
+        self.assertEqual(names(self.user.profile), ["rust", "sql"])
