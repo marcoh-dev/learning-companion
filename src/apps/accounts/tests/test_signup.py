@@ -28,3 +28,10 @@ class ValidSignUpTests(TestCase):
 
         self.assertTrue(get_user_model().objects.filter(username="ada").exists())
         self.assertRedirects(response, "/")
+
+    def test_valid_signup_logs_the_new_user_in(self):
+        self.client.post(SIGNUP_URL, signup_data())
+
+        user = get_user_model().objects.get(username="ada")
+        self.assertEqual(self.client.session.get("_auth_user_id"), str(user.pk))
+        self.assertTrue(self.client.get("/").context["user"].is_authenticated)
