@@ -60,7 +60,7 @@
   - test: `test_goal_create.py`
   - impl: `views.py` (`form_valid`), `models.py` (`get_absolute_url`)
   - covers: AC2, AC3 (200 characters accepted)
-- [ ] 4. **Edit page.**
+- [x] 4. **Edit page.**
   - GET `/goals/<id>/edit/` shows the form prefilled with the goal's current title, description and status.
   - A valid POST saves, redirects to detail, and shows "Goal saved.". The owner is unchanged even with `owner=bob.pk` posted.
   - Invalid POSTs (the AC3 cases) re-render with errors, and the DB row is unchanged.

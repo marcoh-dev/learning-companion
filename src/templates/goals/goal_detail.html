@@ -14,4 +14,5 @@
     <dt>Updated</dt>
     <dd><time datetime="{{ goal.updated_at|date:"c" }}">{{ goal.updated_at }}</time></dd>
   </dl>
+  <p><a href="{% url 'goal-update' goal.pk %}">Edit</a></p>
 {% endblock %}
