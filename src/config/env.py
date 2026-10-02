@@ -16,6 +16,8 @@ def read_settings(environ: Mapping[str, str], env_file: Path, argv: Sequence[str
     class _Env(Env):
         ENVIRON = dict(environ)
 
+    # Fills `_Env.ENVIRON` without overwriting it, so the real environment wins.
+    _Env.read_env(env_file)
     env = _Env()
     debug = env.bool("DEBUG", default=False)
     secret_key = env.str("SECRET_KEY", default="")

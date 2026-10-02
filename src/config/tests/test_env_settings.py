@@ -1,4 +1,6 @@
 import importlib.util
+import os
+import tempfile
 from pathlib import Path
 
 from django.conf import settings
@@ -71,3 +73,17 @@ class ReadSettingsTests(SimpleTestCase):
         result = read({"DEBUG": "False"}, argv=["manage.py", "test", "src", "-t", "src"])
 
         self.assertEqual(result["SECRET_KEY"], DEV_SECRET_KEY)
+
+    def test_values_are_read_from_the_env_file_and_the_environment_wins(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            env_file = Path(tmp) / ".env"
+            env_file.write_text(
+                "SECRET_KEY=from-file\nDEBUG=True\nALLOWED_HOSTS=file.example.com\n"
+            )
+
+            result = read({"SECRET_KEY": "from-env"}, env_file=env_file)
+
+        self.assertEqual(result["SECRET_KEY"], "from-env")
+        self.assertNotIn("ALLOWED_HOSTS", os.environ)
+        self.assertIs(result["DEBUG"], True)
+        self.assertEqual(result["ALLOWED_HOSTS"], ["file.example.com"])
