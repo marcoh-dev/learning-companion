@@ -54,6 +54,7 @@ class AnonymousNavTests(TestCase):
         html = render_child("")
 
         self.assertNotIn("?next=", html)
+        self.assertInHTML(f'<a href="{reverse("login")}">Log in</a>', html)
 
 
 class LoggedInNavTests(TestCase):
