@@ -13,4 +13,7 @@ def read_settings(environ: Mapping[str, str], env_file: Path, argv: Sequence[str
         ENVIRON = dict(environ)
 
     env = _Env()
-    return {"SECRET_KEY": env.str("SECRET_KEY")}
+    return {
+        "SECRET_KEY": env.str("SECRET_KEY"),
+        "DEBUG": env.bool("DEBUG", default=False),
+    }

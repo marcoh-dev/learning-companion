@@ -31,3 +31,17 @@ class ReadSettingsTests(SimpleTestCase):
         result = read({"SECRET_KEY": "from-env"})
 
         self.assertEqual(result["SECRET_KEY"], "from-env")
+
+    def test_debug_is_parsed_as_a_boolean(self):
+        cases = {"True": True, "true": True, "1": True, "yes": True,
+                 "False": False, "false": False, "0": False, "no": False}
+
+        for raw, expected in cases.items():
+            with self.subTest(DEBUG=raw):
+                result = read({"SECRET_KEY": "k", "DEBUG": raw})
+                self.assertIs(result["DEBUG"], expected)
+
+    def test_debug_defaults_to_false(self):
+        result = read({"SECRET_KEY": "k"})
+
+        self.assertIs(result["DEBUG"], False)
