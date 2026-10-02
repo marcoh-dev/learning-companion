@@ -10,7 +10,7 @@ As a visitor, I want every page to share one styled layout with navigation, and 
 - [x] AC4 `base.html` defines a `title` block and a `content` block; the home page sets a page title containing "Learning Companion".
 - [x] AC5 `base.html` has a `<nav>` with a brand link "Learning Companion" pointing to `/`.
 - [x] AC6 The nav also contains placeholder links labelled "Goals", "Sessions", "Dashboard", "Log in" and "Sign up". The target pages do not exist yet, so hard-coded placeholder hrefs are fine; the tickets that build those pages replace them.
-- [x] AC7 `base.html` renders Django messages: a message added to the request (via `django.contrib.messages`) appears in the rendered page, and no messages container is rendered when there are none.
+- [ ] AC7 `base.html` renders Django messages: a message added to the request (via `django.contrib.messages`) appears in the rendered page, and no messages container is rendered when there are none.
 - [x] AC8 The home page shows an `<h1>` with the app name "Learning Companion" and a short intro paragraph describing what the app does (track learning goals and sessions, attach resources, get AI summaries).
 
 ## Out of scope
