@@ -129,3 +129,22 @@ class EmptyGoalListTests(TestCase):
         response = self.client.get(GOALS_URL)
 
         self.assertNotContains(response, "No goals yet")
+
+
+class NewGoalLinkTests(TestCase):
+    def setUp(self):
+        self.ada = create_user("ada")
+        self.client.force_login(self.ada)
+
+    def test_list_links_to_create_page(self):
+        Goal.objects.create(owner=self.ada, title="Learn Django")
+
+        response = self.client.get(GOALS_URL)
+
+        self.assertContains(response, f'<a href="{reverse("goal-create")}">New goal</a>', html=True)
+
+    def test_empty_state_links_to_create_page(self):
+        response = self.client.get(GOALS_URL)
+
+        self.assertContains(response, "No goals yet")
+        self.assertContains(response, f'<a href="{reverse("goal-create")}">New goal</a>', html=True)

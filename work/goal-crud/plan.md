@@ -79,7 +79,7 @@
   - test: `apps/goals/tests/test_goal_delete.py`, plus one test in `test_goal_detail.py` for the Delete link
   - impl: `views.py` (`GoalDeleteView`), `urls.py`, `templates/goals/goal_confirm_delete.html`, `goal_detail.html` (Delete link)
   - covers: AC10, AC11, AC12, AC4 (Delete link)
-- [ ] 6. **"New goal" link on the list.** The list page links to `reverse("goal-create")`, both when the user has goals and in the empty state.
+- [x] 6. **"New goal" link on the list.** The list page links to `reverse("goal-create")`, both when the user has goals and in the empty state.
   - test: `test_goal_list.py`
   - impl: `goal_list.html`
   - covers: AC13

@@ -4,6 +4,7 @@
 
 {% block content %}
   <h1>Your goals</h1>
+  <p><a href="{% url 'goal-create' %}">New goal</a></p>
   {% if goal_list %}
     <ul class="goal-list">
       {% for goal in goal_list %}
