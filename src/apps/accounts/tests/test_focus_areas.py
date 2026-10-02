@@ -56,3 +56,13 @@ class FocusAreaFormTests(TestCase):
 
         expected = {name: name == "python" for name in STARTER_TAGS} | {"rust": True}
         self.assertEqual(checkboxes, expected)
+
+    def test_another_users_private_tag_is_not_offered_or_shown(self):
+        bob = create_user("bob")
+        bob.profile.focus_areas.add(tag("secret-b"))
+        self.client.force_login(create_user("ada"))
+
+        response = self.client.get(PROFILE_URL)
+
+        self.assertNotIn("secret-b", focus_area_checkboxes(response))
+        self.assertNotContains(response, "secret-b")
