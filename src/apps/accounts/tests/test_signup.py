@@ -42,3 +42,22 @@ class ValidSignUpTests(TestCase):
         response = self.client.post(SIGNUP_URL, signup_data(), follow=True)
 
         self.assertIn("Welcome, ada! Your account has been created.", messages_section(response.content.decode()))
+
+
+class InvalidSignUpTests(TestCase):
+    def test_invalid_signup_rerenders_form_with_errors_and_creates_no_user(self):
+        get_user_model().objects.create_user(username="taken", password=PASSWORD)
+        cases = {
+            "mismatched passwords": signup_data(password2=PASSWORD + "x"),
+            "password rejected by validators": signup_data(password1="12345678", password2="12345678"),
+            "existing username in another case": signup_data(username="TAKEN"),
+        }
+
+        for case, data in cases.items():
+            with self.subTest(case=case):
+                response = self.client.post(SIGNUP_URL, data)
+
+                self.assertEqual(response.status_code, 200)
+                self.assertTrue(response.context["form"].errors)
+                self.assertEqual(get_user_model().objects.count(), 1)
+                self.assertFalse(response.context["user"].is_authenticated)
