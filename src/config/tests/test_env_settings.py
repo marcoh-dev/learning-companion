@@ -16,6 +16,7 @@ from config.env import DEV_SECRET_KEY, read_settings
 
 REPO_ROOT = Path(settings.BASE_DIR).parent
 REQUIREMENTS_PATH = REPO_ROOT / "requirements.txt"
+ENV_EXAMPLE_PATH = REPO_ROOT / ".env.example"
 
 
 class RequirementsTests(SimpleTestCase):
@@ -124,3 +125,27 @@ class SettingsWiringTests(SimpleTestCase):
         offenders = [str(path) for path in sources if old_key_fragment in path.read_text()]
 
         self.assertEqual(offenders, [])
+
+
+class EnvExampleTests(SimpleTestCase):
+    def test_documents_every_variable_with_an_example_value_and_a_comment(self):
+        lines = ENV_EXAMPLE_PATH.read_text().splitlines()
+        expected = [
+            "SECRET_KEY=change-me",
+            "DEBUG=True",
+            "ALLOWED_HOSTS=localhost,127.0.0.1",
+            "OPENAI_API_KEY=",
+            "OPENAI_MODEL=",
+        ]
+
+        assignments = [line for line in lines if line and not line.startswith("#")]
+        self.assertEqual(assignments, expected)
+        for assignment in expected:
+            with self.subTest(assignment=assignment):
+                previous = lines[lines.index(assignment) - 1]
+                self.assertTrue(previous.startswith("# "), f"no comment above {assignment}")
+
+    def test_env_file_is_git_ignored(self):
+        ignored = (REPO_ROOT / ".gitignore").read_text().splitlines()
+
+        self.assertIn(".env", ignored)
