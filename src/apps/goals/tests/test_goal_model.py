@@ -1,6 +1,7 @@
 from io import StringIO
 
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
 from django.core.management import call_command
 from django.test import TestCase
 
@@ -25,6 +26,34 @@ class GoalFieldTests(TestCase):
         goal = Goal.objects.create(owner=owner, title="Learn Django")
 
         self.assertEqual(str(goal), "Learn Django")
+
+
+class GoalStatusTests(TestCase):
+    def setUp(self):
+        self.owner = get_user_model().objects.create_user(username="ada")
+
+    def test_status_choices_are_planned_in_progress_and_done(self):
+        field = Goal._meta.get_field("status")
+
+        self.assertEqual(
+            field.choices,
+            [("planned", "Planned"), ("in_progress", "In progress"), ("done", "Done")],
+        )
+
+    def test_status_defaults_to_planned(self):
+        goal = Goal.objects.create(owner=self.owner, title="Learn Django")
+
+        goal.refresh_from_db()
+        self.assertEqual(goal.status, "planned")
+        self.assertEqual(goal.get_status_display(), "Planned")
+
+    def test_unknown_status_fails_validation(self):
+        goal = Goal(owner=self.owner, title="Learn Django", status="archived")
+
+        with self.assertRaises(ValidationError) as caught:
+            goal.full_clean()
+
+        self.assertIn("status", caught.exception.message_dict)
 
 
 class GoalOwnerTests(TestCase):

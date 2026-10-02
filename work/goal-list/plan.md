@@ -32,7 +32,7 @@
   - test: `src/apps/goals/tests/test_goal_model.py`
   - impl: new app `src/apps/goals/` (`apps.py`, `models.py`, `migrations/0001_initial.py` via makemigrations), `INSTALLED_APPS`
   - covers: AC1 (title/description/owner, migration), AC4, AC5
-- [ ] 2. **Status field.** It defaults to `planned`, its choices equal `[("planned","Planned"),("in_progress","In progress"),("done","Done")]`, and `full_clean()` raises `ValidationError` for `status="archived"`.
+- [x] 2. **Status field.** It defaults to `planned`, its choices equal `[("planned","Planned"),("in_progress","In progress"),("done","Done")]`, and `full_clean()` raises `ValidationError` for `status="archived"`.
   - test: `test_goal_model.py`
   - impl: `models.py`, `migrations/0002_*`
   - covers: AC1 (status), AC2
