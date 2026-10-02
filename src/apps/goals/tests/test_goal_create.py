@@ -3,6 +3,7 @@ from django.urls import reverse
 
 from apps.goals.models import Goal
 from apps.goals.tests.test_goal_list import create_user
+from config.tests.test_base_layout import messages_section
 
 CREATE_URL = "/goals/new/"
 
@@ -62,3 +63,32 @@ class GoalCreatePageTests(TestCase):
 
                 self.assertContains(response, error, status_code=200)
                 self.assertFalse(Goal.objects.exists())
+
+
+class GoalCreateSuccessTests(TestCase):
+    def setUp(self):
+        self.ada = create_user("ada")
+        self.bob = create_user("bob")
+        self.client.force_login(self.ada)
+        self.data = {
+            "title": "x" * 200,
+            "description": "Models, views and templates.",
+            "status": "in_progress",
+            "owner": self.bob.pk,
+        }
+
+    def test_valid_post_creates_one_goal_owned_by_the_signed_in_user(self):
+        self.client.post(CREATE_URL, self.data)
+
+        goal = Goal.objects.get()
+        self.assertEqual(goal.owner, self.ada)
+        self.assertEqual(goal.title, "x" * 200)
+        self.assertEqual(goal.description, "Models, views and templates.")
+        self.assertEqual(goal.status, Goal.Status.IN_PROGRESS)
+
+    def test_valid_post_redirects_to_detail_with_success_message(self):
+        response = self.client.post(CREATE_URL, self.data, follow=True)
+
+        goal = Goal.objects.get()
+        self.assertRedirects(response, f"/goals/{goal.pk}/")
+        self.assertIn("Goal created.", messages_section(response.content.decode()))

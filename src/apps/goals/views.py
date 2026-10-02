@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import CreateView, DetailView, ListView
 
@@ -25,3 +26,8 @@ class GoalDetailView(OwnGoalMixin, DetailView):
 class GoalCreateView(LoginRequiredMixin, CreateView):
     form_class = GoalForm
     template_name = "goals/goal_form.html"
+
+    def form_valid(self, form):
+        form.instance.owner = self.request.user
+        messages.success(self.request, "Goal created.")
+        return super().form_valid(form)

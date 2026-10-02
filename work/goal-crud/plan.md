@@ -54,7 +54,7 @@
   - test: `apps/goals/tests/test_goal_create.py`
   - impl: `forms.py` (`GoalForm`), `views.py` (`GoalCreateView`), `urls.py`, `templates/goals/goal_form.html`
   - covers: AC1, AC3 (invalid cases)
-- [ ] 3. **Create, valid POST.**
+- [x] 3. **Create, valid POST.**
   - A POST with a 200-character title, a description and status `in_progress` creates exactly one goal owned by ada. That's true even when `owner=bob.pk` is posted.
   - The response redirects to the new goal's detail page, which shows "Goal created." in the messages section.
   - test: `test_goal_create.py`
