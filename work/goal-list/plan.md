@@ -36,7 +36,7 @@
   - test: `test_goal_model.py`
   - impl: `models.py`, `migrations/0002_*`
   - covers: AC1 (status), AC2
-- [ ] 3. **Timestamps.** With `timezone.now` patched to T1 on create and T2 on a later save, `created_at == T1` and `updated_at == T2`.
+- [x] 3. **Timestamps.** With `timezone.now` patched to T1 on create and T2 on a later save, `created_at == T1` and `updated_at == T2`.
   - test: `test_goal_model.py`
   - impl: `models.py`, `migrations/0003_*`
   - covers: AC1 (timestamps), AC3

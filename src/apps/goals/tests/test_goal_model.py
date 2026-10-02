@@ -1,4 +1,6 @@
+from datetime import datetime, timezone as dt_timezone
 from io import StringIO
+from unittest import mock
 
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
@@ -54,6 +56,34 @@ class GoalStatusTests(TestCase):
             goal.full_clean()
 
         self.assertIn("status", caught.exception.message_dict)
+
+
+class GoalTimestampTests(TestCase):
+    T1 = datetime(2026, 10, 1, 9, 0, tzinfo=dt_timezone.utc)
+    T2 = datetime(2026, 10, 2, 17, 30, tzinfo=dt_timezone.utc)
+
+    def setUp(self):
+        self.owner = get_user_model().objects.create_user(username="ada")
+
+    def test_created_at_and_updated_at_are_set_on_create(self):
+        with mock.patch("django.utils.timezone.now", return_value=self.T1):
+            goal = Goal.objects.create(owner=self.owner, title="Learn Django")
+
+        goal.refresh_from_db()
+        self.assertEqual(goal.created_at, self.T1)
+        self.assertEqual(goal.updated_at, self.T1)
+
+    def test_saving_again_moves_updated_at_but_keeps_created_at(self):
+        with mock.patch("django.utils.timezone.now", return_value=self.T1):
+            goal = Goal.objects.create(owner=self.owner, title="Learn Django")
+
+        goal.title = "Learn Django properly"
+        with mock.patch("django.utils.timezone.now", return_value=self.T2):
+            goal.save()
+
+        goal.refresh_from_db()
+        self.assertEqual(goal.created_at, self.T1)
+        self.assertEqual(goal.updated_at, self.T2)
 
 
 class GoalOwnerTests(TestCase):
