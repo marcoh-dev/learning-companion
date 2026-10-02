@@ -34,3 +34,27 @@ Suite: 24 tests OK. `check` (with CI's `SECRET_KEY`): no issues.
 
 ## Reviewed
 commit f896c1b, 2026-10-02
+
+
+---
+
+# Review round 2: env-settings
+
+## Verdict: FAIL
+
+The fixes for round-1 findings 1–7 are confirmed by both reviewers. AC6 is still not fully met: a whitespace-only `SECRET_KEY` (effectively unset) and a padded placeholder such as `change-me ` are accepted with DEBUG off (reproduced). The findings became plan steps 21–22.
+
+## Acceptance criteria
+- AC1–AC5, AC7–AC13 — same tests as round 1, plus `test_secret_key_starting_with_dollar_is_taken_verbatim` (AC4), `test_allowed_hosts_entries_are_stripped_and_empty_entries_dropped` / `test_explicitly_empty_allowed_hosts_stays_empty` (AC8), the widened `test_the_old_hardcoded_secret_key_is_gone_from_src` (AC9) and `test_env_variants_are_git_ignored_but_the_example_is_tracked` (AC10) — PASS
+- AC6 — `test_missing_secret_key_with_debug_off_is_improperly_configured`, `test_placeholder_secret_key_with_debug_off_is_improperly_configured`, `test_test_command_*`, `test_test_exception_only_applies_to_manage_py` — **FAIL**: a blank or whitespace-padded key gets past the guard (finding R2-1)
+
+Suite: 31 tests OK (with and without the shell variables set). `check` (with CI's `SECRET_KEY`): no issues.
+
+## Findings
+1. [medium] `src/config/env.py:30-31, 53-58` (code + security) — `_is_placeholder` compares the unstripped, case-sensitive value. django-environ's `read_env` keeps trailing spaces and inline `# comments`. `"   "`, `"change-me "`, `" django-insecure-x"` and `"Change-Me"` are accepted as real keys with DEBUG off. — Strip the key, compare case-insensitively, and use the stripped key. → step 21
+2. [low] `CLAUDE.md:20` (code) — the settings sentence is out of date after steps 15/19 (placeholders count as missing; the exception is `manage.py test` only). `.env.example` doesn't say that inline comments are unsupported (security). — Reword both. → step 22
+3. [low] `src/config/env.py:28, 47` (code) — `DEBUG`/`ALLOWED_HOSTS` still use `env.bool`/`env.list`, so `ALLOWED_HOSTS=$OTHER` resolves `$OTHER`, and a list-valued proxy crashes with `AttributeError`. — **Not planned:** it needs a deliberate `$NAME` value, and it fails loudly at startup (fails closed). Can become its own ticket.
+4. [low] (security) — a stronger rule (reject keys shorter than 50 chars, like `security.W009`). — **Not planned:** `check --deploy` hardening is out of scope per the ticket.
+
+## Reviewed
+commit 1f976e2, 2026-10-02

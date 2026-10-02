@@ -57,3 +57,7 @@
 - [x] 18. The old-key test scans every readable text file under `src/` (excluding `db.sqlite3`), not just `*.py`. Test-only change — test: `test_env_settings.py` — impl: none — covers: AC9 (finding 5)
 - [x] 19. The `test` exception only applies when `argv[0]` is `manage.py` (basename), so e.g. `["gunicorn", "test"]` still raises — test: `test_env_settings.py` — impl: `config/env.py` — covers: AC6 (finding 6)
 - [x] 20. `.gitignore` ignores `.env.*` variants but keeps `.env.example` tracked — test: `test_env_settings.py` (`git check-ignore`, or `.gitignore` lines `.env.*` and `!.env.example`) — impl: `.gitignore` — covers: AC10 (finding 7)
+
+## Review findings (round 2, see review.md)
+- [ ] 21. The placeholder/unset check uses the stripped key, case-insensitively: with DEBUG off (not under `manage.py test`), `"   "`, `"change-me "`, `"Change-Me"` and `" django-insecure-x"` raise `ImproperlyConfigured`. A real key with surrounding whitespace is returned stripped — test: `test_env_settings.py` — impl: `config/env.py` — covers: AC6 (R2 finding 1)
+- [ ] 22. `CLAUDE.md` says that placeholder keys count as missing and that the exception is `manage.py test` only. `.env.example`'s header says inline `#` comments after a value are not supported. The doc test asserts both phrases — test: `test_env_settings.py` — impl: `CLAUDE.md`, `.env.example` — covers: AC10, AC13 (R2 finding 2)
