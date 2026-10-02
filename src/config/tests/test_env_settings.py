@@ -45,3 +45,13 @@ class ReadSettingsTests(SimpleTestCase):
         result = read({"SECRET_KEY": "k"})
 
         self.assertIs(result["DEBUG"], False)
+
+    def test_allowed_hosts_is_parsed_as_a_comma_separated_list(self):
+        result = read({"SECRET_KEY": "k", "ALLOWED_HOSTS": "example.com,www.example.com"})
+
+        self.assertEqual(result["ALLOWED_HOSTS"], ["example.com", "www.example.com"])
+
+    def test_allowed_hosts_defaults_to_localhost(self):
+        result = read({"SECRET_KEY": "k"})
+
+        self.assertEqual(result["ALLOWED_HOSTS"], ["localhost", "127.0.0.1"])
