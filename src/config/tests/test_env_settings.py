@@ -125,6 +125,16 @@ class ReadSettingsTests(SimpleTestCase):
 
         self.assertEqual(result["SECRET_KEY"], DEV_SECRET_KEY)
 
+    def test_allowed_hosts_entries_are_stripped_and_empty_entries_dropped(self):
+        result = read({"SECRET_KEY": "k", "ALLOWED_HOSTS": " a.com, b.com ,,"})
+
+        self.assertEqual(result["ALLOWED_HOSTS"], ["a.com", "b.com"])
+
+    def test_explicitly_empty_allowed_hosts_stays_empty(self):
+        result = read({"SECRET_KEY": "k", "ALLOWED_HOSTS": ""})
+
+        self.assertEqual(result["ALLOWED_HOSTS"], [])
+
 
 class SettingsWiringTests(SimpleTestCase):
     def test_settings_take_their_values_from_read_settings(self):

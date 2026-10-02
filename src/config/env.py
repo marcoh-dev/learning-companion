@@ -40,7 +40,11 @@ def read_settings(environ: Mapping[str, str], env_file: Path, argv: Sequence[str
     return {
         "SECRET_KEY": secret_key,
         "DEBUG": debug,
-        "ALLOWED_HOSTS": env.list("ALLOWED_HOSTS", default=["localhost", "127.0.0.1"]),
+        "ALLOWED_HOSTS": [
+            host.strip()
+            for host in env.list("ALLOWED_HOSTS", default=["localhost", "127.0.0.1"])
+            if host.strip()
+        ],
     }
 
 
