@@ -66,3 +66,8 @@ class ReadSettingsTests(SimpleTestCase):
     def test_missing_secret_key_with_debug_off_is_improperly_configured(self):
         with self.assertRaisesMessage(ImproperlyConfigured, "SECRET_KEY"):
             read({"DEBUG": "False"})
+
+    def test_test_command_uses_the_dev_key_when_secret_key_is_unset_and_debug_is_off(self):
+        result = read({"DEBUG": "False"}, argv=["manage.py", "test", "src", "-t", "src"])
+
+        self.assertEqual(result["SECRET_KEY"], DEV_SECRET_KEY)

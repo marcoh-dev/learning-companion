@@ -20,10 +20,11 @@ def read_settings(environ: Mapping[str, str], env_file: Path, argv: Sequence[str
     debug = env.bool("DEBUG", default=False)
     secret_key = env.str("SECRET_KEY", default="")
     if not secret_key:
-        if not debug:
+        running_tests = list(argv[1:2]) == ["test"]
+        if not (debug or running_tests):
             raise ImproperlyConfigured(
                 "Set the SECRET_KEY environment variable (or add it to .env); "
-                "the development key is only used when DEBUG is True."
+                "the development key is only used when DEBUG is True or under `manage.py test`."
             )
         secret_key = DEV_SECRET_KEY
     return {
