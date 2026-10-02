@@ -4,6 +4,8 @@ import yaml
 from django.conf import settings
 from django.test import SimpleTestCase
 
+from config.env import DEV_SECRET_KEY
+
 WORKFLOW_PATH = Path(settings.BASE_DIR).parent / ".github" / "workflows" / "ci.yml"
 
 
@@ -79,3 +81,10 @@ class CiWorkflowTests(SimpleTestCase):
         self.assertNotIn("continue-on-error", job)
         for step in job["steps"]:
             self.assertNotIn("continue-on-error", step)
+
+    def test_sets_a_non_secret_ci_secret_key_for_the_job(self):
+        job = load_workflow()["jobs"]["test"]
+        secret_key = job.get("env", {}).get("SECRET_KEY", "")
+
+        self.assertTrue(secret_key, "the test job sets no SECRET_KEY")
+        self.assertNotEqual(secret_key, DEV_SECRET_KEY)

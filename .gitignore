@@ -3,6 +3,8 @@ __pycache__/
 *.pyc
 db.sqlite3
 .env
+.env.*
+!.env.example
 staticfiles/
 .DS_Store
 work/untracked/
