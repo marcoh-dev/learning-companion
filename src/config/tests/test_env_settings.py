@@ -2,6 +2,7 @@ import importlib.util
 from pathlib import Path
 
 from django.conf import settings
+from django.core.exceptions import ImproperlyConfigured
 from django.test import SimpleTestCase
 
 from config.env import DEV_SECRET_KEY, read_settings
@@ -61,3 +62,7 @@ class ReadSettingsTests(SimpleTestCase):
 
         self.assertEqual(result["SECRET_KEY"], DEV_SECRET_KEY)
         self.assertTrue(DEV_SECRET_KEY.startswith("django-insecure-"))
+
+    def test_missing_secret_key_with_debug_off_is_improperly_configured(self):
+        with self.assertRaisesMessage(ImproperlyConfigured, "SECRET_KEY"):
+            read({"DEBUG": "False"})
