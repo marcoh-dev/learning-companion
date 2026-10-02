@@ -30,3 +30,19 @@ class LoginTests(TestCase):
 
         self.assertRedirects(response, "/")
         self.assertEqual(self.client.session.get("_auth_user_id"), str(user.pk))
+
+    def test_login_follows_safe_next_and_ignores_external_next(self):
+        create_user()
+        cases = {
+            "/goals/": "/goals/",
+            "https://evil.example/": "/",
+        }
+
+        for next_url, expected in cases.items():
+            with self.subTest(next=next_url):
+                response = self.client.post(
+                    f"{LOGIN_URL}?next={next_url}", {"username": "ada", "password": PASSWORD}
+                )
+
+                # /goals/ doesn't exist yet, so don't fetch the redirect target.
+                self.assertRedirects(response, expected, fetch_redirect_response=False)
