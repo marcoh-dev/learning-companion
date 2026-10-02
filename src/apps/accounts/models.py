@@ -14,3 +14,4 @@ class Profile(models.Model):
     )
     name = models.CharField(max_length=100, blank=True)
     cohort = models.CharField(max_length=20, choices=Cohort, blank=True)
+    focus_areas = models.ManyToManyField('tags.Tag', blank=True, related_name='profiles')

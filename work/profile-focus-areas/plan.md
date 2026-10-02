@@ -38,7 +38,7 @@
 - **Pinning tests:** as in #3–#5, a step whose test passes straight away names a temporary mutation that must turn it red. Run it, revert it, and note it in the commit message.
 
 ## Steps
-- [ ] 1. A profile can hold focus-area tags: after `profile.focus_areas.add(Tag.objects.create(name="rust"))`, `profile.focus_areas` contains exactly that tag. test: `apps/tags/tests/test_tag_model.py`. impl: `apps.tags` app (startapp, `apps.py` name, `INSTALLED_APPS`), `Tag` model + migration `tags/0001`, `Profile.focus_areas` + migration `accounts/0002`. covers: AC1
+- [x] 1. A profile can hold focus-area tags: after `profile.focus_areas.add(Tag.objects.create(name="rust"))`, `profile.focus_areas` contains exactly that tag. test: `apps/tags/tests/test_tag_model.py`. impl: `apps.tags` app (startapp, `apps.py` name, `INSTALLED_APPS`), `Tag` model + migration `tags/0001`, `Profile.focus_areas` + migration `accounts/0002`. covers: AC1
 - [ ] 2. Tag rules: a duplicate name raises `IntegrityError`, `name` has `max_length` 30, and deleting the user (and with it the profile) leaves the tag in place. Pinning; mutation: `unique=False` must go red, and so must `max_length=50`. covers: AC1
 - [ ] 3. A freshly migrated DB contains exactly the starter tags `devops, django, javascript, python, sql, testing` with `starter=True`. impl: data migration `tags/0002_seed_starter_tags` (`RunPython` + reverse). covers: AC2
 - [ ] 4. The display block shows `<dd>python, testing</dd>` (alphabetical) for a profile with those focus areas, and `<dd>not set</dd>` when there are none. Deliberate test change: `test_empty_profile_shows_not_set_for_name_and_cohort` now expects `count=3`, called out in the commit. impl: `profile.html` display row. covers: AC3
