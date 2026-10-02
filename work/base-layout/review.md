@@ -1,30 +1,30 @@
 # Review: base-layout
-## Verdict: FAIL
+## Verdict: PASS
 
-AC7 is only partly proven. It requires "a message added to the request (via `django.contrib.messages`) appears in the rendered page". Both messages tests inject a hand-built `messages` list straight into the template context and never exercise the messages framework or the `messages` context processor. Removing the context processor, or renaming the template variable, would leave the suite green while real messages never render. An uncovered acceptance criterion means FAIL.
+Round 2. Round 1 (commit d8b72ab) FAILED because AC7 was only partly proven: the messages tests injected a hand-built list instead of going through `django.contrib.messages`. Plan steps 11–13 resolved that finding and two related lows. Both reviewers confirmed the fixes, and the code reviewer independently confirmed that the end-to-end messages test goes red when the `messages` context processor is removed.
 
 ## Acceptance criteria
 - AC1 — covered by `HomePageTests.test_home_page_returns_200_for_anonymous_visitor` — PASS
 - AC2 — covered by `HomePageTests.test_home_page_renders_home_template_extending_base` + `BaseLayoutTests.test_child_template_fills_title_and_content_blocks` — PASS
-- AC3 — covered by `BaseLayoutTests.test_only_stylesheet_is_pico_css_from_cdn` — PASS (see low finding on robustness)
+- AC3 — covered by `BaseLayoutTests.test_only_stylesheet_is_pico_css_from_cdn` (parses every stylesheet `<link>`, rejects `@import`) — PASS
 - AC4 — covered by `BaseLayoutTests.test_child_template_fills_title_and_content_blocks` + `HomePageTests.test_home_page_title_contains_app_name` — PASS
 - AC5 — covered by `BaseLayoutTests.test_nav_has_brand_link_to_home` — PASS
 - AC6 — covered by `BaseLayoutTests.test_nav_has_placeholder_links_for_upcoming_pages` — PASS
-- AC7 — partly covered by `BaseLayoutTests.test_messages_are_rendered_in_messages_container` + `test_no_messages_container_without_messages`; the "added to the request via django.contrib.messages" path is untested — FAIL
+- AC7 — covered by `HomePageTests.test_message_added_via_messages_framework_appears_on_home_page` (end-to-end), `BaseLayoutTests.test_messages_are_rendered_in_messages_container`, `BaseLayoutTests.test_no_messages_container_without_messages` — PASS
 - AC8 — covered by `HomePageTests.test_home_page_shows_heading_and_intro` — PASS
 
-Suite: 45 tests, OK. `manage.py check`: no issues.
+Suite: 46 tests, OK. `manage.py check`: no issues.
 
 ## Findings
-- [medium] src/config/tests/test_base_layout.py:89-97 — The AC7 tests bypass `django.contrib.messages` (context processor and storage). — Add an end-to-end test that adds a message with `messages.success(request, ...)` and renders the home page through the real context processors (plan step 11).
-- [low] src/config/tests/test_base_layout.py:92 — `assertRegex(r'(?s)class="messages".*Goal saved\.')` would pass even if the text were rendered after `</section>`. — Assert on the extracted `<section class="messages">` fragment (plan step 12).
-- [low] src/config/tests/test_base_layout.py:70-75 — The "only Pico" check only counts links containing exactly `rel="stylesheet"`, so it misses quoting variants and `@import`. — Parse `<link>` tags with `html.parser` and also assert there is no `@import` (plan step 13).
-- [low] src/config/tests/test_base_layout.py:38-42 — `assertTemplateUsed` alone would also pass for `{% include %}`. AC2 is adequately covered together with the block-inheritance test. — Accepted, no change.
-- [low] src/config/tests/test_base_layout.py:49-56 — The intro check joins all `<p>` text on the page. That's fine while there is a single paragraph. — Accepted, no change.
-- [low] src/templates/base.html:7 (security) — The CDN stylesheet has no SRI `integrity`/`crossorigin` attributes and uses a floating `@2` range. CSS only, so no script execution. — Out of scope for this ticket. Recommend a hardening ticket (pin an exact version + SRI, or vendor into `src/static/`).
-- [low] src/config/settings.py (security) — No Content-Security-Policy or production cookie/HSTS settings yet. — Out of scope. Same hardening ticket (Django's built-in CSP, `check --deploy`).
+Code review: 0 high, 0 medium, 4 low. Security review: 0 high, 0 medium, 3 low. None block the merge.
 
-Security review: 0 high, 0 medium, 2 low. Code review: 0 high, 1 medium, 4 low.
+- [low] src/config/tests/test_base_layout.py:133-136 — The "no messages container" case is only tested with an explicit `{"messages": []}` context, not through the real (lazy storage) request path. — Follow-up: assert `class="messages"` is absent from a plain `GET /`.
+- [low] src/config/tests/test_base_layout.py:110-114 — The stylesheet check doesn't assert that the Pico `<link>` sits inside `<head>`. — Follow-up: scope the collector to `<head>`.
+- [low] src/config/tests/test_base_layout.py:88-97 (security) — No test pins that message text is HTML-escaped. A later `|safe` would go unnoticed. — Follow-up: assert `messages.success(request, "<script>x</script>")` renders as `&lt;script&gt;`. Best done with the first ticket that puts user input into messages (goal CRUD, #8).
+- [low] src/config/tests/test_base_layout.py:128-131 — The context-level messages test overlaps the new end-to-end test. — Accepted; kept as a fast template-level check.
+- [low] src/config/tests/test_base_layout.py:55-58 — `messages_section` matches the exact opening tag, so it's brittle if attributes change. — Accepted; matches the plan's markup decision.
+- [low] src/templates/base.html:7 (security) — The CDN stylesheet has no SRI and uses a floating `@2` range. CSS only. — Deferred to a hardening ticket (pin exact version + SRI, or vendor into `src/static/`).
+- [low] src/config/settings.py (security) — No CSP, HSTS or secure-cookie settings yet. — Deferred to the same hardening ticket (built-in CSP, `check --deploy`).
 
 ## Reviewed
-commit d8b72ab, 2026-10-02
+commit f37a5b4, 2026-10-02
