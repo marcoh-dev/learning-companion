@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Count
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DeleteView, DetailView, ListView, UpdateView
 
@@ -31,8 +32,17 @@ class GoalListView(OwnGoalMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         active = self.active_status()
+        # Counts cover all own goals, independent of the active filter.
+        counts = dict(
+            super().get_queryset().values_list("status").annotate(count=Count("pk")).order_by()
+        )
+        counts[""] = sum(counts.values())
         context["status_options"] = [
-            {"value": value, "label": label, "selected": value == active}
+            {
+                "value": value,
+                "label": f"{label} ({counts.get(value, 0)})",
+                "selected": value == active,
+            }
             for value, label in [("", "All"), *Goal.Status.choices]
         ]
         return context

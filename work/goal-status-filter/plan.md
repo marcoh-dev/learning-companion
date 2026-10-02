@@ -41,7 +41,7 @@
   - test: `test_goal_filter.py`
   - impl: `views.py` (`get_context_data`: `status_options` without counts), `goal_list.html`
   - covers: AC4, AC5
-- [ ] 4. **Counts in option labels.**
+- [x] 4. **Counts in option labels.**
   - Ada has 2 planned, 1 in progress and 2 done goals; Bob has 3 done goals.
   - The labels are exactly `["All (5)", "Planned (2)", "In progress (1)", "Done (2)"]`, and they're identical with `?status=done`.
   - test: `test_goal_filter.py`

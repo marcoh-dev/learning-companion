@@ -160,3 +160,33 @@ class FilterFormTests(TestCase):
                 self.assertIsNotNone(form)
                 selected = [option["value"] for option in form["options"] if option["selected"]]
                 self.assertEqual(selected, [expected])
+
+
+class FilterCountTests(TestCase):
+    def setUp(self):
+        self.ada = create_user("ada")
+        bob = create_user("bob")
+        self.client.force_login(self.ada)
+        for day, status in enumerate(["planned", "planned", "in_progress", "done", "done"], start=1):
+            create_goal(self.ada, f"Ada goal {day}", status, day)
+        for day in (6, 7, 8):
+            create_goal(bob, f"Bob goal {day}", "done", day)
+
+    def test_option_labels_count_own_goals_per_status(self):
+        expected = ["All (5)", "Planned (2)", "In progress (1)", "Done (2)"]
+
+        for status in (None, "done", "archived"):
+            with self.subTest(status=status):
+                params = {} if status is None else {"status": status}
+                response = self.client.get(GOALS_URL, params)
+
+                labels = [option["label"] for option in filter_form(response)["options"]]
+                self.assertEqual(labels, expected)
+
+    def test_statuses_without_goals_count_zero(self):
+        self.ada.goals.exclude(status="planned").delete()
+
+        response = self.client.get(GOALS_URL)
+
+        labels = [option["label"] for option in filter_form(response)["options"]]
+        self.assertEqual(labels, ["All (2)", "Planned (2)", "In progress (0)", "Done (0)"])
