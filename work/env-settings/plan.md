@@ -19,7 +19,7 @@
 
 ## Steps
 - [x] 1. `django-environ` is pinned in `requirements.txt` and importable — test: `src/config/tests/test_env_settings.py` — impl: `.venv/bin/pip install django-environ==0.14.0`, `requirements.txt` (via `pip freeze`) — covers: AC1
-- [ ] 2. `read_settings` returns `SECRET_KEY` from `environ` when set — test: `test_env_settings.py` — impl: `src/config/env.py` (new) — covers: AC4
+- [x] 2. `read_settings` returns `SECRET_KEY` from `environ` when set — test: `test_env_settings.py` — impl: `src/config/env.py` (new) — covers: AC4
 - [ ] 3. `DEBUG` is parsed as a boolean (`True`/`False`/`1`/`0`/`yes`/`no`) and defaults to `False` — test: `test_env_settings.py` — impl: `config/env.py` — covers: AC7
 - [ ] 4. `ALLOWED_HOSTS` is parsed as a comma-separated list and defaults to `["localhost", "127.0.0.1"]` — test: `test_env_settings.py` — impl: `config/env.py` — covers: AC8
 - [ ] 5. With `SECRET_KEY` unset and `DEBUG` True, the insecure dev key is returned (starts with `django-insecure-`) — test: `test_env_settings.py` — impl: `config/env.py` — covers: AC5
