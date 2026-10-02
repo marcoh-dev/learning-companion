@@ -10,7 +10,7 @@ then add a plain `- [ ] <title> (#N)` line here.
 
 - [x] ci-test-workflow: CI: run the Django test suite on every push and PR (#1) — work/ci-test-workflow/review.md
 - [x] env-settings: Settings from environment (.env) (#2) — work/env-settings/review.md
-- [~] base-layout: Base layout and home page (#3)
+- [x] base-layout: Base layout and home page (#3) — work/base-layout/review.md
 - [ ] Sign up, log in, log out (#4)
 - [ ] Profile model and own-profile page (#5)
 - [ ] Profile focus areas (tags) (#6)
